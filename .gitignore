@@ -2,3 +2,4 @@
 .mcp
 jbum_pushover.py
 slack_credentials.py
+__pycache__/

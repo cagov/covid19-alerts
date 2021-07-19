@@ -9,8 +9,7 @@ import requests, json
 from types import SimpleNamespace
 
 
-# sys.stdout.reconfigure(encoding='utf-8')
-# reopen stdout as utf-8
+# reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
 
 parser = argparse.ArgumentParser(description='Clicky Stats Daemon')
