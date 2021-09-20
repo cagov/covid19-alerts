@@ -36,7 +36,7 @@ def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
 
 # get today's date
 #
-NBR_TEST_BITS = 11
+NBR_TEST_BITS = 12
 IDX_DATE_SUMMARY = 0
 IDX_DATE_CASES = 1
 IDX_MATCH_CASES = 2
@@ -48,6 +48,7 @@ IDX_DATE_GROUPS = 7
 IDX_DATE_POSITIVITY = 8
 IDX_DATE_PATIENTS = 9
 IDX_DATE_ICUBEDS = 10
+IDX_SPARKLINES = 11
 
 def do_tests():
     total_tests = 0
@@ -82,8 +83,6 @@ def do_tests():
         site_cases_total = int(fetch_str(r'<div id="total-cases-number" .*?<strong>(.*?)</strong',text).replace(',',''))
         site_deaths_total = int(fetch_str(r'<div id="total-deaths-number" .*?<strong>(.*?)</strong',text).replace(',',''))
         # site_tests_total = int(fetch_str(r'<div id="total-tested-number" .*?<strong>(.*?)</strong',text).replace(',',''))
-        if args.verbose:
-            print("Fetch Result: '%s'" % (fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text)))
         # if fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text).replace(',','').isnumeric():
         #     site_cases_today = int(fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text).replace(',',''))
         #     site_deaths_today = int(fetch_str(r'<div id="total-deaths-today" .*?<strong>(.*?)</strong',text).replace(',',''))
@@ -111,6 +110,9 @@ def do_tests():
     patients_file_url = 'https://files.covid19.ca.gov/data/dashboard/patients/california.json?x=x'
     icubeds_file_url = 'https://files.covid19.ca.gov/data/dashboard/icu-beds/california.json?x=x'
     groups_file_url = 'https://files.covid19.ca.gov/data/infections-by-group/infections-by-group-california.json'
+    sparklines_cases_url = 'https://files.covid19.ca.gov/img/generated/sparklines/sparkline-cases.svg'
+
+
 
     r = requests.get(cases_file_url)
     case_data = json.loads(r.text, object_hook=lambda d: SimpleNamespace(**d))
@@ -220,6 +222,17 @@ def do_tests():
     else:
         msgs.append("ICU-bed chart data is stale")
 
+    r = requests.get(sparklines_cases_url)
+    text = r.text.replace("\n"," ")
+    publish_date = fetch_str(r'DATA_PUBLISHED_DATE:(.*?),',text)
+    total_tests += 1
+    if publish_date == now_snowdate:
+        passes[IDX_SPARKLINES] = 1
+        total_passes += 1
+        msgs.append("Site has today's cases sparkline")
+    else:
+        msgs.append("Cases sparkline is stale")
+
 
     msgs.append("%d/%d tests pass" % (total_passes, total_tests))
     return passes, msgs
@@ -234,9 +247,9 @@ def do_tests():
 #
 # look for PRs, if any, and check those numbers
 # flag masks
-FM_ALL_DONE = 0x7FF  # all tests passed
+FM_ALL_DONE = 0xFFF  # all tests passed
 FM_ALL_STALE = 0x54 # only the content tests pass
-FM_DATE_TESTS = 0x7AB # chart date tests
+FM_DATE_TESTS = 0xFAB # chart date tests
 FM_CONTENT_TESTS = 0x54  # chart content match tests
 
 last_res_mask = FM_ALL_DONE
@@ -287,12 +300,12 @@ try:
             print("STATUS CHANGE %s %02x" % ( datetime.now().strftime('%B %-d, %Y %H:%M:%S'), flag_mask ), res)
             print(msgs)
             broadcast_msg = ''
-            chartdatebits = {'summaries':0,'cases-charts':1,'deaths-charts':3,'testing-charts':5,'groups-charts':7,'positivity-chart':8,'patients-charts':9,'ICU-beds-chart':10}
+            chartdatebits = {'summaries':0,'cases-charts':1,'deaths-charts':3,'testing-charts':5,'groups-charts':7,'positivity-chart':8,'patients-charts':9,'ICU-beds-chart':10,'Sparklines':11}
             chartmatchbits = {'cases':2,'deaths':4,'tests':6}
             big_broadcast = False
             if flag_mask == FM_ALL_DONE:
-                broadcast_msg = '/state-dashboard/ has been fully updated (charts match summaries)'
-                big_broadcast = False
+                broadcast_msg = '/state-dashboard/ has been fully updated (charts match summaries, sparklines updated)'
+                big_broadcast = True
             elif flag_mask == FM_ALL_STALE:
                 pass
             elif (flag_mask & FM_DATE_TESTS) == FM_DATE_TESTS and (flag_mask & FM_CONTENT_TESTS) != FM_CONTENT_TESTS:
