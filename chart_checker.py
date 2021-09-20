@@ -43,7 +43,7 @@ IDX_MATCH_CASES = 2
 IDX_DATE_DEATHS = 3
 IDX_MATCH_DEATHS = 4
 IDX_DATE_TESTS = 5
-IDX_MATCH_TESTS = 6
+IDX_MATCH_TESTS = 6  # no longer used
 IDX_DATE_GROUPS = 7
 IDX_DATE_POSITIVITY = 8
 IDX_DATE_PATIENTS = 9
@@ -81,19 +81,21 @@ def do_tests():
     try:
         site_cases_total = int(fetch_str(r'<div id="total-cases-number" .*?<strong>(.*?)</strong',text).replace(',',''))
         site_deaths_total = int(fetch_str(r'<div id="total-deaths-number" .*?<strong>(.*?)</strong',text).replace(',',''))
-        site_tests_total = int(fetch_str(r'<div id="total-tested-number" .*?<strong>(.*?)</strong',text).replace(',',''))
+        # site_tests_total = int(fetch_str(r'<div id="total-tested-number" .*?<strong>(.*?)</strong',text).replace(',',''))
         if args.verbose:
             print("Fetch Result: '%s'" % (fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text)))
-        if fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text).replace(',','').isnumeric():
-            site_cases_today = int(fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text).replace(',',''))
-            site_deaths_today = int(fetch_str(r'<div id="total-deaths-today" .*?<strong>(.*?)</strong',text).replace(',',''))
-            site_tests_today = int(fetch_str(r'<div id="total-tested-today" .*?<strong>(.*?)</strong',text).replace(',',''))
-        else:
-            if args.verbose:
-                print("Got hyphens",fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text))
-            site_cases_today = -1
-            site_deaths_today = -1
-            site_tests_today = -1
+        # if fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text).replace(',','').isnumeric():
+        #     site_cases_today = int(fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text).replace(',',''))
+        #     site_deaths_today = int(fetch_str(r'<div id="total-deaths-today" .*?<strong>(.*?)</strong',text).replace(',',''))
+        #     # site_tests_today = int(fetch_str(r'<div id="total-tested-today" .*?<strong>(.*?)</strong',text).replace(',',''))
+        # else:
+        #     if args.verbose:
+        #         print("Got hyphens",fetch_str(r'<div id="total-cases-today" .*?<strong>(.*?)</strong',text))
+        #     site_cases_today = -1
+        #     site_deaths_today = -1
+        site_cases_today = -1
+        site_deaths_today = -1
+        site_tests_today = -1
     except Exception as e:
         if args.verbose:
             print ("!! parse error")
@@ -166,12 +168,13 @@ def do_tests():
     else:
         msgs.append("Test chart data is stale")
 
-    total_tests += 1
-    if chart_tests_total == site_tests_total and (site_tests_today == -1 or chart_tests_today == site_tests_today):
-        passes[IDX_MATCH_TESTS] = 1
-        total_passes += 1
-    else:
-         msgs.append("Tests in charts (%d/%d) mismatch summaries (%d/%d)" % (chart_tests_total,chart_tests_today,site_tests_total,site_tests_today))
+    # total_tests += 1
+    # if chart_tests_total == site_tests_total and (site_tests_today == -1 or chart_tests_today == site_tests_today):
+    #     passes[IDX_MATCH_TESTS] = 1
+    #     total_passes += 1
+    # else:
+    #      msgs.append("Tests in charts (%d/%d) mismatch summaries (%d/%d)" % (chart_tests_total,chart_tests_today,site_tests_total,site_tests_today))
+    passes[IDX_MATCH_TESTS] = passes[IDX_MATCH_CASES] # force match/unmatch for this
 
     r = requests.get(groups_file_url)
     group_data = json.loads(r.text, object_hook=lambda d: SimpleNamespace(**d))
@@ -289,13 +292,13 @@ try:
             big_broadcast = False
             if flag_mask == FM_ALL_DONE:
                 broadcast_msg = '/state-dashboard/ has been fully updated (charts match summaries)'
-                big_broadcast = True
+                big_broadcast = False
             elif flag_mask == FM_ALL_STALE:
                 pass
             elif (flag_mask & FM_DATE_TESTS) == FM_DATE_TESTS and (flag_mask & FM_CONTENT_TESTS) != FM_CONTENT_TESTS:
                 missmatched_items = [nom for nom,idx in chartmatchbits.items() if res[idx] == 0]
                 broadcast_msg = '/state-dashboard/ has been fully updated, but %s charts don\'t match summaries' % ('/'.join(missmatched_items))
-                big_broadcast = True
+                big_broadcast = False
             else:
                 updated_items_prev = [nom for nom,idx in chartdatebits.items() if (last_res_mask & (1 << idx))]
                 updated_items_new = [nom for nom,idx in chartdatebits.items() if (flag_mask & (1 << idx))]
