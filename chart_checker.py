@@ -224,7 +224,7 @@ def do_tests():
 
     r = requests.get(sparklines_cases_url)
     text = r.text.replace("\n"," ")
-    publish_date = fetch_str(r'DATA_PUBLISHED_DATE:(.*?),',text)
+    publish_date = fetch_str(r'DATA_PUBLISHED_DATE:\s*(.*?)\s*,',text)
     total_tests += 1
     if publish_date == now_snowdate:
         passes[IDX_SPARKLINES] = 1
