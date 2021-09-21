@@ -4,6 +4,7 @@
 #
 import re, sys, os, time, argparse, random, importlib
 from datetime import datetime, date
+from pytz import timezone
 import http.client, urllib
 import requests, json
 from types import SimpleNamespace
@@ -260,7 +261,7 @@ try:
         sys.stdout.flush()
         if runs > 0:
             # random sleep
-            now = datetime.now()
+            now = datetime.now().astimezone(timezone('US/Pacific'))
             if now.hour == 9 and last_res_mask != FM_ALL_DONE:
                 sleep_secs = 30
             elif last_res_mask == FM_ALL_DONE:
