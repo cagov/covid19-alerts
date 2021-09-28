@@ -262,7 +262,7 @@ try:
         if runs > 0:
             # random sleep
             now = datetime.now().astimezone(timezone('US/Pacific'))
-            if now.hour == 9 and last_res_mask != FM_ALL_DONE:
+            if (now.hour == 9 or now.hour == 10) and last_res_mask != FM_ALL_DONE:
                 sleep_secs = 30
             elif last_res_mask == FM_ALL_DONE:
                 # sleep til midnight
