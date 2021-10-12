@@ -227,10 +227,16 @@ try:
                 updated_items_new = [nom for nom,idx in chartdatebits.items() if (flag_mask & (1 << idx))]
                 new_items = list(set(updated_items_new).difference(set(updated_items_prev)))
                 if last_res_mask == FM_EXPECTED_STALE_PASSES:
-                    broadcast_msg = '/state-dashboard/ updates are starting (%s added)' % (','.join(new_items))
+                    if len(new_items) > 0:
+                        broadcast_msg = '/state-dashboard/ updates are starting (%s added)' % (','.join(new_items))
+                    else:
+                        broadcast_msg = '/state-dashboard/ updates are starting'
                     big_broadcast = True
                 else:
-                    broadcast_msg = '/state-dashboard/ has been partially updated (%s added)' % (','.join(new_items))
+                    if len(new_items) > 0:
+                        broadcast_msg = '/state-dashboard/ has been partially updated (%s added)' % (','.join(new_items))
+                    else:
+                        broadcast_msg = '/state-dashboard/ has been partially updated'
             if broadcast_msg != '':
                 print("BROADCAST MESSAGE: %s" % (broadcast_msg))
                 if not args.quiet:
