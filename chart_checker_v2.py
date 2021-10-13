@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 #
 import re, sys, time, argparse, importlib
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from pytz import timezone
 import requests, json
 from chart_checker_tests import chart_tests
@@ -90,7 +90,9 @@ def do_tests():
                     datetgt = fetch_str(trec['pat'], r.text.replace("\n"," "))
                 is_pass = datetgt == now_snowdate
             elif trec['test_type'] == 'WEEKDATE_GTE_WEDNESDAY':
-                last_wednesday = datetime.today()
+                from datetime import date as dtdate
+                from datetime import time as dttime
+                last_wednesday = datetime.combine(dtdate.today(),dttime())  # today at midnight
                 while last_wednesday.weekday() != 2:
                     last_wednesday -= timedelta(days=1)
                 if 'json_url' in trec:
@@ -134,7 +136,7 @@ def do_tests():
 FM_DATE_TESTS = 0
 FM_CONTENT_TESTS = 0
 for i,trec in enumerate(chart_tests):
-    if 'DATE' in trec['test_type'] and 'WEEKDATE' not in trec['test_type']:
+    if 'DATE' in trec['test_type']:
         FM_DATE_TESTS |= (1 << i)
     else:
         FM_CONTENT_TESTS |= (1 << i)
@@ -190,6 +192,8 @@ try:
             
         # recompute expected staleness mask here...
         FM_EXPECTED_STALE_PASSES = compute_staleness_mask()
+        if args.verbose:
+            print("Expected stale passes %x, date tests %x content tests %x" % (FM_EXPECTED_STALE_PASSES, FM_DATE_TESTS, FM_CONTENT_TESTS))
 
         flag_mask = 0
         for i in range(len(res)):
@@ -197,6 +201,7 @@ try:
                 flag_mask |= (1 << i)
         if args.verbose:
             print("Got Status %02x" % (flag_mask))
+
         if flag_mask != last_res_mask:
             print("STATUS CHANGE %s %02x" % ( datetime.now().strftime('%B %-d, %Y %H:%M:%S'), flag_mask ), res)
             print(msgs)
