@@ -150,7 +150,7 @@ def compute_staleness_mask():
     if not isWednesday:
         for i,trec in enumerate(chart_tests):
             if 'WEEKDATE' in trec['test_type']:
-                FM_EXPECTED_STALE_PASSES |= (1 << 1)
+                FM_EXPECTED_STALE_PASSES |= (1 << i)
     return FM_EXPECTED_STALE_PASSES
 
 last_res_mask = FM_ALL_DONE
