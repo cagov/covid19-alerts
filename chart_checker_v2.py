@@ -1,7 +1,12 @@
-# chart checker
+# chart checker v2
 #
 # -*- coding: utf-8 -*-
 #
+# This checks for various updates to the COVID-19 state-dashboard page and reports the morning updates 
+# (and possible issues) to Slack via the #covid19-alerts and #covid19-state-dashboard channels.
+# 
+#
+
 import re, sys, time, argparse, importlib
 from datetime import datetime, timedelta
 from pytz import timezone
@@ -233,13 +238,13 @@ try:
                 new_items = list(set(updated_items_new).difference(set(updated_items_prev)))
                 if last_res_mask == FM_EXPECTED_STALE_PASSES:
                     if len(new_items) > 0:
-                        broadcast_msg = '/state-dashboard/ updates are starting (%s added)' % (','.join(new_items))
+                        broadcast_msg = '/state-dashboard/ updates are starting (%s updated)' % (','.join(new_items))
                     else:
                         broadcast_msg = '/state-dashboard/ updates are starting'
                     big_broadcast = True
                 else:
                     if len(new_items) > 0:
-                        broadcast_msg = '/state-dashboard/ has been partially updated (%s added)' % (','.join(new_items))
+                        broadcast_msg = '/state-dashboard/ has been partially updated (%s updated)' % (','.join(new_items))
                     else:
                         broadcast_msg = '/state-dashboard/ has been partially updated'
             if broadcast_msg != '':
