@@ -6,6 +6,7 @@
 # (and possible issues) to Slack via the #covid19-alerts and #covid19-state-dashboard channels.
 # 
 #
+# see if there is a way to pull numbers from tableau charts.
 
 import re, sys, time, argparse, importlib
 from datetime import datetime, timedelta
@@ -25,7 +26,7 @@ args = parser.parse_args()
 
 cagov_config = importlib.import_module(args.config)
 from slack_credentials import slackbot_token
-from slack_info import slackAlertChannel, slackStateDashChannel, slackOutagesChannel, slackBotDebugChannel
+from slack_info import slackAlertChannel, slackStateDashChannel, slackJimDebugChannel
 
 def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
     return requests.post('https://slack.com/api/chat.postMessage', {
@@ -74,6 +75,7 @@ def do_tests():
 
     for ti,trec in enumerate(chart_tests):
         is_pass = False
+        exception_occured = False
         # if args.verbose:
         #     print("TREC %s" % (trec['nom']))
 
@@ -119,9 +121,9 @@ def do_tests():
                 print("Invalid Test Type",trec['test_type'])
         except Exception as e:
             is_pass = False
-            if args.verbose:
-                print ("!! exception")
-                print(e)
+            exception_occured = True
+            print ("!! exception")
+            print(e)
             msgs.append("%s !! exception" % (trec['nom']))
             continue
 
@@ -134,7 +136,7 @@ def do_tests():
             msgs.append("%s FAIL" % (trec['nom']))
 
     msgs.append("%d/%d tests pass" % (total_passes, total_tests))
-    return passes, msgs
+    return passes, msgs, exception_occured
 
 
 # compute flags here...
@@ -186,13 +188,17 @@ try:
             time.sleep(sleep_secs)
         importlib.reload(cagov_config)
         try:
-            res, msgs = do_tests()
+            res, msgs, exception_occured = do_tests()
             runs += 1
         except Exception as e:
             print("Error running tests",e)
             sys.exit(0)
         if len(res) == 0: # parse error
             print("Parse Error")
+            continue
+        if exception_occured:
+            print("Ignoring exception")
+            post_message_to_slack("Chart Checker raised an exception", channel=slackJimDebugChannel)
             continue
             
         # recompute expected staleness mask here...
@@ -251,7 +257,7 @@ try:
                 print("BROADCAST MESSAGE: %s" % (broadcast_msg))
                 if not args.quiet:
                     if args.test:
-                        post_message_to_slack(broadcast_msg, channel=slackBotDebugChannel)
+                        post_message_to_slack(broadcast_msg, channel=slackJimDebugChannel)
                     else:
                         if big_broadcast:
                             post_message_to_slack(broadcast_msg, channel=slackStateDashChannel)

@@ -22,7 +22,7 @@ args = parser.parse_args()
 
 cagov_config = importlib.import_module(args.config)
 from slack_credentials import slackbot_token
-from slack_info import slackAlertChannel, slackStateDashChannel, slackOutagesChannel, slackBotDebugChannel
+from slack_info import slackAlertChannel, slackStateDashChannel, slackJimDebugChannel
 
 def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
     return requests.post('https://slack.com/api/chat.postMessage', {
@@ -326,7 +326,7 @@ try:
                 print("BROADCAST MESSAGE: %s" % (broadcast_msg))
                 if not args.quiet:
                     if args.test:
-                        post_message_to_slack(broadcast_msg, channel=slackBotDebugChannel)
+                        post_message_to_slack(broadcast_msg, channel=slackJimDebugChannel)
                     else:
                         if big_broadcast:
                             post_message_to_slack(broadcast_msg, channel=slackStateDashChannel)

@@ -1,6 +1,7 @@
 # slack info
 slackBotCompletedWorkChannel = 'C01BMCQK0F6' # main channel
 slackBotDebugChannel = 'C01DBP67MSQ' # #testingbot
+slackJimDebugChannel = 'C02J16U50KE' # jim-testing
 slackAlertChannel = 'C01MEQWF668' #covid19-alerts
 slackOutagesChannel = 'C01M1U4R0K0' # covid19-site-outages
 slackCodeMovementChannel = 'CUUAH7Z7G'
