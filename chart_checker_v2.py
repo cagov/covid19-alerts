@@ -73,9 +73,9 @@ def do_tests():
                 return None
         return data
 
+    exception_occured = False
     for ti,trec in enumerate(chart_tests):
         is_pass = False
-        exception_occured = False
         # if args.verbose:
         #     print("TREC %s" % (trec['nom']))
 
