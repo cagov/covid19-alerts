@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from pytz import timezone
 import requests, json
 from chart_checker_tests import chart_tests
+from jbum_pushover import pushover_app_token, pushover_user_key
 
 # reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
@@ -38,6 +39,30 @@ def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
         'blocks': json.dumps(blocks) if blocks else None
     }).json()
 
+def send_pushover(message, title='CAGOVAlert', url=None, url_title=None):
+    global args
+    try:
+        print("Broadcasting message:",message)
+        if args.test:
+            return
+        payload = {"token": pushover_app_token, 
+                "user": pushover_user_key, 
+                "title": title,
+                "message": message} 
+        if url is not None:
+            payload['url'] = url
+            payload['url_title'] = url_title
+
+        conn = http.client.HTTPSConnection("api.pushover.net:443")
+        conn.request("POST", "/1/messages.json",
+        urllib.parse.urlencode(payload), 
+            { "Content-type": "application/x-www-form-urlencoded" })
+        r = conn.getresponse()
+        if r.status != 200:
+            raise httplib.HTTPException("Response not 200")
+    except Exception as e:
+        print(e)
+        pass
 
 # get today's date
 #
@@ -162,6 +187,7 @@ def compute_staleness_mask():
 
 last_res_mask = FM_ALL_DONE
 runs = 0
+stale_alert_issued = False
 
 try:
     while True:
@@ -232,6 +258,7 @@ try:
             if flag_mask == FM_ALL_DONE:
                 broadcast_msg = '/state-dashboard/ has been fully updated (charts match summaries, sparklines updated)'
                 big_broadcast = True
+                stale_alert_issued = False
             elif flag_mask == FM_EXPECTED_STALE_PASSES:  # check for typical morning staleness...
                 pass
             elif (flag_mask & FM_DATE_TESTS) == FM_DATE_TESTS and (flag_mask & FM_CONTENT_TESTS) != FM_CONTENT_TESTS:
@@ -253,6 +280,7 @@ try:
                         broadcast_msg = '/state-dashboard/ has been partially updated (%s updated)' % (','.join(new_items))
                     else:
                         broadcast_msg = '/state-dashboard/ has been partially updated'
+
             if broadcast_msg != '':
                 print("BROADCAST MESSAGE: %s" % (broadcast_msg))
                 if not args.quiet:
@@ -267,6 +295,19 @@ try:
         else:
             if args.verbose:
                 print("No Change: res %02x" %(flag_mask))
+            
+        if flag_mask != FM_ALL_DONE and now.hour == 9 and now.minute >= 50 and not stale_alert_issued:
+            # issue stale alert
+            print("STALE ALERT")
+            stale_alert_issued = True
+            if not args.quiet:
+                msg = "State-Dash is still showing stale data after 9:50am!"
+                post_message_to_slack(msg, channel=slackJimDebugChannel)
+                send_pushover(msg)
+                if not args.test:
+                    post_message_to_slack(msg, channel=slackAlertChannel)
+
+
         last_res_mask = flag_mask
 except KeyboardInterrupt:
     print('interrupted!')
