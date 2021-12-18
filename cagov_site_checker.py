@@ -30,6 +30,7 @@ def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
         'token': slackbot_token,
         'channel': channel,
         'text': text,
+        'icon_emoji': ':small_red_triangle:',
         # 'icon_url': slack_icon_url,
         # 'username': slack_user_name,
         'blocks': json.dumps(blocks) if blocks else None
