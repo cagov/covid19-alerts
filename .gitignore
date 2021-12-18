@@ -5,7 +5,7 @@ slack_credentials.py
 slack_info.py
 stdout.log
 package-lock.json
-node_modules/*
+*/node_modules/*
 *.svg
 attic/*
 __pycache__/
