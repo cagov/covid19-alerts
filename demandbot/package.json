@@ -1,0 +1,21 @@
+{
+  "name": "fetch-search",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "*",
+    "fetch-retry": "^4.1.1",
+    "jsdom": "^16.4.0",
+    "jsonschema": "^1.4.0",
+    "md5": "^2.3.0",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1"
+  }
+}
