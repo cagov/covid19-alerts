@@ -2,32 +2,32 @@
   "mask mandate": {
     "query": "mask mandate",
     "min": 334,
-    "max": 334
+    "max": 344
   },
   "covid testing": {
     "query": "covid testing",
     "min": 210,
-    "max": 210
+    "max": 238
   },
   "digital vaccine card": {
     "query": "digital vaccine card",
     "min": 143,
-    "max": 143
+    "max": 173
   },
   "vaccine record": {
     "query": "vaccine record",
     "min": 85,
-    "max": 85
+    "max": 105
   },
   "omicron": {
     "query": "omicron",
     "min": 83,
-    "max": 83
+    "max": 101
   },
   "masks": {
     "query": "masks",
     "min": 42,
-    "max": 42
+    "max": 63
   },
   "mandate": {
     "query": "mandate",
@@ -103,5 +103,15 @@
     "query": "or any of my second child ticket winners",
     "min": 11,
     "max": 11
+  },
+  "home deport dryer": {
+    "query": "home deport dryer",
+    "min": 10,
+    "max": 10
+  },
+  "travel": {
+    "query": "travel",
+    "min": 14,
+    "max": 14
   }
 }

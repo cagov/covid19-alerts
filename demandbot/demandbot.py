@@ -1,7 +1,6 @@
 # demandbot.py
 
-import re, sys, time, argparse, importlib
-from datetime import datetime, timedelta
+import sys, time, argparse, importlib
 from pytz import timezone
 import requests, json
 
@@ -10,10 +9,14 @@ sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
 
 parser = argparse.ArgumentParser(description='Clicky Stats Daemon')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
+parser.add_argument('-vv', '--very_verbose', default=False, action='store_true', help='Very Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test - broadcast to testingbot only')
 parser.add_argument('-q', '--quiet', default=False, action='store_true', help='No broadcasting')
 parser.add_argument('-config', default="demandbot_config", help='Config file name prefix, default=%(default)s')
 args = parser.parse_args()
+
+if args.very_verbose:
+    args.verbose = True
 
 dbot_config = importlib.import_module(args.config)
 from slack_credentials import slackbot_token
@@ -49,8 +52,6 @@ def loadWordbase():
 def updateWordbase(q):
     global wordbase
     if q['query'] not in wordbase:
-        if args.verbose:
-            print("new",q['query'])
         rec = {'query':q['query'], 'min':q['num'],  'max':0}
         wordbase[q['query']] = rec
         qrec = rec
@@ -62,7 +63,7 @@ def updateWordbase(q):
     if q['num'] > qrec['max']:
         qrec['max'] = q['num']
     if last_max < 10 and qrec['max'] >= 10:
-        msg = "new search: %s (%s)" % (q['query'], 'rejected' if wouldReject(q['query']) else 'pass')
+        msg = "new search: %s" % (q['<redacted>'] if wouldReject(q['query']) else q['query'])
         print("[DemandBot] " + msg)
         if not args.test:
             post_message_to_slack(msg, channel=slackJimDebugChannel)
@@ -93,7 +94,7 @@ rejectList = [
 	-519573749, 32245991, -1045620280, 3083181, 
 	105116, 3059156, -717313205, -20842805,
 	3529280, 3441177, 3065272, 3541578,
-    -1220868373
+    -1220868373, -1734002494
 ]
 
 def wouldReject(phrase):
@@ -114,7 +115,7 @@ try:
         json_text = jr.text.replace('\\x','%')
         data = json.loads(json_text)
         for q in data['popularQueries']:
-            if args.verbose:
+            if args.very_verbose:
                 print("%-3d %s reject=%s (%d)" % (q['num'],q['query'],wouldReject(q['query']), hashCode(q['query'])))
             updateWordbase(q)
         saveWordbase()
