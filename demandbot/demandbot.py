@@ -65,9 +65,9 @@ def updateWordbase(q):
     if last_max < 10 and qrec['max'] >= 10:
         msg = "new search: %s" % (q['<redacted>'] if wouldReject(q['query']) else q['query'])
         print("[DemandBot] " + msg)
-        if not args.test:
-            post_message_to_slack(msg, channel=slackJimDebugChannel)
         # advertise it...
+        if not args.test:
+            post_message_to_slack(msg, channel=slackAlertChannel)
 
 def saveWordbase():
     global wordbase
