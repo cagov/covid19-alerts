@@ -302,7 +302,7 @@ try:
             print("STALE ALERT")
             stale_alert_issued = True
             if not args.quiet:
-                msg = "State-Dash is still showing stale data after 9:50am!"
+                msg = "@xian @jbum @Aaron State-Dash is still showing stale data after 9:50am!"
                 post_message_to_slack(msg, channel=slackJimDebugChannel)
                 send_pushover(msg)
                 if not args.test:
