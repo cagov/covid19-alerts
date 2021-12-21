@@ -20,14 +20,14 @@ if args.very_verbose:
 
 dbot_config = importlib.import_module(args.config)
 from slack_credentials import slackbot_token
-from slack_info import slackAlertChannel, slackStateDashChannel, slackJimDebugChannel
+from slack_info import slackAlertChannel, slackStateDashChannel, slackJimDebugChannel, slackPageFeedbackChannel
 
 def post_message_to_slack(text, blocks = None, channel=slackJimDebugChannel):
     res = requests.post('https://slack.com/api/chat.postMessage', {
         'token': slackbot_token,
         'channel': channel,
         'text': "[DemandBot] " + text,
-        'icon_emoji': ':dance-robot:',
+        'icon_emoji': ':mag:',
         # 'icon_url': slack_icon_url,
         # 'username': slack_user_name,
         'blocks': json.dumps(blocks) if blocks else None
@@ -68,6 +68,7 @@ def updateWordbase(q):
         # advertise it...
         if not args.test:
             post_message_to_slack(msg, channel=slackAlertChannel)
+            post_message_to_slack(msg, channel=slackPageFeedbackChannel)
 
 def saveWordbase():
     global wordbase
