@@ -6,13 +6,13 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'tracker-boxes',
     },
-    {
-        'nom':'DATE_CASES',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-cases/california.json?x=aa',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
-        'bnom':'cases-chart',
-    },
+    # {
+    #     'nom':'DATE_CASES',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-cases/california.json?x=aa',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_MATCHES_TODAYSNOW',
+    #     'bnom':'cases-chart',
+    # },
     {
         'nom':'MATCH_CASES_TOTAL',
         'url':'https://covid19.ca.gov/state-dashboard',
@@ -22,13 +22,13 @@ chart_tests = [
         'test_type':'NUMBER_MATCHES_JSON',
         'bnom':'cases-chart',
     },
-    {
-        'nom':'DATE_DEATHS',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-cases/california.json?x=cc',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
-        'bnom':'deaths-chart',
-    },
+    # {
+    #     'nom':'DATE_DEATHS',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-deaths/california.json?x=cc',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_MATCHES_TODAYSNOW',
+    #     'bnom':'deaths-chart',
+    # },
     {
         'nom':'MATCH_DEATHS_TOTAL',
         'url':'https://covid19.ca.gov/state-dashboard',
@@ -38,13 +38,13 @@ chart_tests = [
         'test_type':'NUMBER_MATCHES_JSON',
         'bnom':'deaths-chart',
     },
-    {
-        'nom':'DATE_TESTS',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-cases/california.json?x=ee',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
-        'bnom':'tests-chart',
-    },
+    # {
+    #     'nom':'DATE_TESTS',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/total-tests/california.json?x=ee',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_MATCHES_TODAYSNOW',
+    #     'bnom':'tests-chart',
+    # },
     {
         'nom':'MATCH_TESTS',
         'test_type':'PASS', # no longer used
@@ -56,28 +56,28 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAYSNOW',
         'bnom':'groups-chart',
     },
-    {
-        'nom':'DATE_POSITIVITY',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/positivity-rate/california.json?x=nn',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
-        'bnom':'positivity-chart',
-    },
-    {
-        'nom':'DATE_PATIENTS',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/patients/california.json?x=ff ',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
-        'bnom':'patients-chart',
+    # {
+    #     'nom':'DATE_POSITIVITY',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/positivity-rate/california.json?x=nn',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_MATCHES_TODAYSNOW',
+    #     'bnom':'positivity-chart',
+    # },
+    # {
+    #     'nom':'DATE_PATIENTS',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/patients/california.json?x=ff ',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_MATCHES_TODAYSNOW',
+    #     'bnom':'patients-chart',
        
-    },
-    {
-        'nom':'DATE_ICUBEDS',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/icu-beds/california.json?x=gg',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
-        'bnom':'icu-beds-chart',
-    },
+    # },
+    # {
+    #     'nom':'DATE_ICUBEDS',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/icu-beds/california.json?x=gg',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_MATCHES_TODAYSNOW',
+    #     'bnom':'icu-beds-chart',
+    # },
     {
         'nom':'DATE_VACCINE_SPARKLINES_DATA',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/vaccines/sparkline.json?x=hh',
