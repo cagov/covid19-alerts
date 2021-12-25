@@ -297,7 +297,8 @@ try:
             if args.verbose:
                 print("No Change: res %02x" %(flag_mask))
             
-        if flag_mask != FM_ALL_DONE and now.hour == 9 and now.minute >= 50 and not stale_alert_issued:
+        now = datetime.now().astimezone(timezone('US/Pacific'))
+        if flag_mask != FM_ALL_DONE and now.hour == 9 and now.minute >= 55 and not stale_alert_issued:
             # issue stale alert
             print("STALE ALERT")
             stale_alert_issued = True

@@ -7,22 +7,22 @@
   "covid testing": {
     "query": "covid testing",
     "min": 210,
-    "max": 238
+    "max": 478
   },
   "digital vaccine card": {
     "query": "digital vaccine card",
-    "min": 143,
+    "min": 96,
     "max": 173
   },
   "vaccine record": {
     "query": "vaccine record",
-    "min": 85,
+    "min": 11,
     "max": 105
   },
   "omicron": {
     "query": "omicron",
     "min": 83,
-    "max": 101
+    "max": 133
   },
   "masks": {
     "query": "masks",
@@ -72,7 +72,7 @@
   "quarantine": {
     "query": "quarantine",
     "min": 15,
-    "max": 15
+    "max": 98
   },
   "restaurant": {
     "query": "restaurant",
@@ -111,7 +111,37 @@
   },
   "travel": {
     "query": "travel",
-    "min": 14,
+    "min": 10,
     "max": 14
+  },
+  "testing": {
+    "query": "testing",
+    "min": 32,
+    "max": 63
+  },
+  "para viajar a puerto rico, que requisitos tengo que cumplir": {
+    "query": "para viajar a puerto rico, que requisitos tengo que cumplir",
+    "min": 13,
+    "max": 13
+  },
+  "prueba de covi en hyattsville": {
+    "query": "prueba de covi en hyattsville",
+    "min": 11,
+    "max": 11
+  },
+  "driver%27s license renewal": {
+    "query": "driver%27s license renewal",
+    "min": 10,
+    "max": 10
+  },
+  "exposure": {
+    "query": "exposure",
+    "min": 10,
+    "max": 10
+  },
+  "test": {
+    "query": "test",
+    "min": 10,
+    "max": 10
   }
 }

@@ -63,7 +63,15 @@ def updateWordbase(q):
     if q['num'] > qrec['max']:
         qrec['max'] = q['num']
     if last_max < 10 and qrec['max'] >= 10:
-        msg = "new search: %s" % (q['<redacted>'] if wouldReject(q['query']) else q['query'])
+        reason = ''
+        if wouldReject(q['query']):
+            reason = 'trigger word'
+        elif tooLong(q['query']):
+            reason = 'too long'
+        elif q['num'] <= 11:
+            reason = 'low score'
+        msg = "new search: %s%s" % ("<redacted>" if wouldReject(q['query']) else q['query'], 
+                                    " (won't show: %s)" % (reason) if reason != '' else '')
         print("[DemandBot] " + msg)
         # advertise it...
         if not args.test:
@@ -99,8 +107,11 @@ rejectList = [
 ]
 
 def wouldReject(phrase):
-    return phrase.count(' ') > 4 or \
-            len([1 for word in phrase.split(' ') if hashCode(word) in rejectList]) > 0
+    return len([1 for word in phrase.split(' ') if hashCode(word) in rejectList]) > 0
+
+def tooLong(phrase):
+    return phrase.count(' ') > 4
+
 
 loadWordbase()
 
