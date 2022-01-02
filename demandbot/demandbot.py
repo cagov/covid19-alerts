@@ -7,7 +7,7 @@ import requests, json
 # reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
 
-parser = argparse.ArgumentParser(description='Clicky Stats Daemon')
+parser = argparse.ArgumentParser(description='demandbot')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
 parser.add_argument('-vv', '--very_verbose', default=False, action='store_true', help='Very Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test - broadcast to testingbot only')

@@ -13,7 +13,7 @@ from types import SimpleNamespace
 # reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
 
-parser = argparse.ArgumentParser(description='Clicky Stats Daemon')
+parser = argparse.ArgumentParser(description='chart checker (old)')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test - broadcast to testingbot only')
 parser.add_argument('-q', '--quiet', default=False, action='store_true', help='No broadcasting')

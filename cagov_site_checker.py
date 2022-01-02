@@ -13,7 +13,7 @@ from slack_credentials import slackbot_token
 from slack_info import slackAlertChannel, slackOutagesChannel, slackTeamID
 
 
-parser = argparse.ArgumentParser(description='Clicky Stats Daemon')
+parser = argparse.ArgumentParser(description='Cagov site checker')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test')
 parser.add_argument('-n', '--no_init_sleep', default=False, action='store_true', help='No initial sleep')
