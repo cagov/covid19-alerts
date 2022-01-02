@@ -15,33 +15,39 @@ file_list = [
     'fields_of_interest': [
         {   'desc':'Total Vaccines',
             'field':'data.vaccinations.CUMMULATIVE_DAILY_DOSES_ADMINISTERED',
-            'params':(15979099, 64075795, 0, 17139150,	0, 1.072598),
+            'date_check': 'data.vaccinations.DATE',
+            'params':(15979099, 64075795, 0, 486334.0,	0, 0.011909),
             'flags':('always_changes','never_sinks')
         },
         {   'desc':'Total Cases',
             'field':'data.cases.LATEST_TOTAL_CONFIRMED_CASES',
+            'date_check': 'data.cases.DATE',
             'params':(3553307,5097398,  -4359,104891,  -0.001173,0.029519),
-            'flags':('always_changes','weekdays')
+            'flags':('always_changes')
         },
         {   'desc':'Cases per 100k',
             'field':'data.cases.LATEST_CONFIDENT_AVG_CASE_RATE_PER_100K_7_DAYS',
+            'date_check': 'data.cases.DATE',
             'params':(1.7, 31.2,  -2.6, 8.8,  -0.275248, 0.537498),
             'flags':()
         },
         {   'desc':'Total Deaths',
             'field':'data.deaths.LATEST_TOTAL_CONFIRMED_DEATHS',
+            'date_check': 'data.deaths.DATE',
             'params':(57091, 75629,  -352, 4214,  -0.005472, 0.073812),
             'flags':()
         },
         {   'desc':'Deaths per 100k',
             'field':'data.deaths.LATEST_CONFIDENT_AVG_DEATH_RATE_PER_100K_7_DAYS',
+            'date_check': 'data.deaths.DATE',
             'params':(0.01851, 0.25097, -0.0195, 0.0267, -0.12003, 0.78948),
             'flags':()
         },
         {   'desc':'Test Positivity Rate',
             'field':'data.tests.LATEST_CONFIDENT_POSITIVITY_RATE_7_DAYS',
+            'date_check': 'data.tests.DATE',
             'params':(0.007, 0.11203, -0.00941, 0.0427, -0.43868, 0.79013),
-            'flags':('always_changes','weekdays')
+            'flags':('always_changes')
         },
     ]
   },

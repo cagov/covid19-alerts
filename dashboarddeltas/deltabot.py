@@ -32,6 +32,8 @@ def post_message_to_slack(text, blocks = None, channel=slackJimDebugChannel):
         'channel': channel,
         'text': "[DeltaBot] " + text,
         'icon_emoji': ':small_red_triangle:',
+        'unfurl_links': False,
+        'unfurl_media': False,
         'blocks': json.dumps(blocks) if blocks else None
     }).json()
     if args.verbose:
@@ -75,18 +77,28 @@ def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage):
     # aaron https://cadotgov.slack.com/team/UQTUFH6FL
     # jbum https://cadotgov.slack.com/team/U01ELJEJ1SM
 
+    # sample link: https://github.com/cagov/covid-static-data/blob/test_deltabot/data/daily-stats-v2.json
+    file_link = 'https://github.com/%s/%s/blob/%s/%s' % (args.org, args.repo, filerec['branch'], filerec['filename'])
     message = '''<@U01ELJEJ1SM>
  %s %s
- ```
  File: %s
  Field: %s
+ ```
  Previous value: %s
  New value     : %s```
-    ''' % (fieldrec['desc'], warnmessage, filerec['filename'], fieldrec['field'], str(old_value), str(new_value))
-    post_message_to_slack(message, channel=slackJimDebugChannel)
+    ''' % (fieldrec['desc'], warnmessage, 
+           file_link,
+           fieldrec['field'], 
+           str(old_value), 
+           str(new_value))
+    if not args.quiet:
+        post_message_to_slack(message, channel=slackJimDebugChannel)
+    else:
+        print("Would post warning\n%s" % (message))
     if args.verbose:
         print("Posting warning about %s %s" % (filerec['filename'], fieldrec['field']))
 
+# UNUSED
 def is_weekday():
     global dbot_config
     now = datetime.now().astimezone(timezone('US/Pacific'))
@@ -142,11 +154,17 @@ try:
                     print("File %s has changed, checking" % (filename))
                 issues_found = 0
                 for frec in file_rec['fields_of_interest']:
+                    if 'date_check' in frec:
+                        old_fdate = get_field(deltabase[filename], frec['date_check'])
+                        new_fdate = get_field(curdata, frec['date_check'])
+                        if new_fdate == old_fdate:
+                            if args.verbose:
+                                print("Field %s date is unchanged" % (frec['field']))
+                            continue
                     old_value = get_field(deltabase[filename], frec['field'])
                     new_value = get_field(curdata, frec['field'])
                     if old_value == new_value and \
-                        'always_changes' in frec['flags'] and \
-                        ('weekdays' not in frec['flags'] or is_weekday()):
+                        'always_changes' in frec['flags']:
                         perform_warning(file_rec, frec, old_value, new_value, "has not changed, but was expected to")
                         issues_found += 1
                     min_value, max_value, min_change, max_change, min_growth, max_growth = frec['params']
