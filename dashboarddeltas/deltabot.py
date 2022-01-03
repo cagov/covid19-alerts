@@ -71,7 +71,7 @@ def get_field(jdata, field_name):
     return f
 
 
-def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage):
+def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage, channel=slackAlertChannel):
     # add after debugging: <@U01KHGNK8KU> <@UQTUFH6FL> <@U01ELJEJ1SM> 
     # xian https://cadotgov.slack.com/team/U01KHGNK8KU
     # aaron https://cadotgov.slack.com/team/UQTUFH6FL
@@ -92,7 +92,7 @@ def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage):
            str(old_value), 
            str(new_value))
     if not args.quiet:
-        post_message_to_slack(message, channel=slackJimDebugChannel)
+        post_message_to_slack(message, channel=channel)
     else:
         print("Would post warning\n%s" % (message))
     if args.verbose:
@@ -178,10 +178,18 @@ try:
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has sunk at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1
+                    elif (delta < min_change) or (growth < min_growth):
+                        perform_warning(file_rec, frec, old_value, new_value, 
+                                "has sunk faster than seen before - time to update config?", channel=slackJimDebugChannel)
+                        issues_found += 1
                     if (delta > dbot_config.trigger_factor * max_change) or \
                        (growth > dbot_config.trigger_factor * max_growth):
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has risen at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
+                        issues_found += 1
+                    elif (delta > max_change) or (growth > max_growth):
+                        perform_warning(file_rec, frec, old_value, new_value, 
+                                "has risen faster than seen before - time to update config?", channel=slackJimDebugChannel)
                         issues_found += 1
             else:
                 if args.reset:
