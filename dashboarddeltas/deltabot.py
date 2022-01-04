@@ -173,21 +173,25 @@ try:
                         growth = (new_value / old_value) - 1.0
                     except Exception as e:
                         growth = 0
-                    if (delta < dbot_config.trigger_factor * min_change) or \
-                       (growth < dbot_config.trigger_factor * min_growth):
+                    # deaths daily average: TRIGGER SINK: old: 45.285714 new: 40.857143 delta: -4.428571 growth: -0.097792 min_change -0.01950, min_growth: -0.12003
+
+                    if growth < dbot_config.trigger_factor * min_growth:
+                        if args.verbose:
+                            print("TRIGGER SINK %s: old: %f new: %f delta: %f growth: %f min_change %.5f, min_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, min_change, min_growth))
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has sunk at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1
-                    elif (delta < min_change) or (growth < min_growth):
+                    elif growth < 1.1*min_growth:
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has sunk faster than seen before - time to update config?", channel=slackJimDebugChannel)
                         issues_found += 1
-                    if (delta > dbot_config.trigger_factor * max_change) or \
-                       (growth > dbot_config.trigger_factor * max_growth):
+                    if growth > dbot_config.trigger_factor * max_growth:
+                        if args.verbose:
+                            print("TRIGGER RISE %s: old: %f new: %f delta: %f growth: %f max_change %.5f, max_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, max_change, max_growth))
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has risen at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1
-                    elif (delta > max_change) or (growth > max_growth):
+                    elif growth > 1.1*max_growth:
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has risen faster than seen before - time to update config?", channel=slackJimDebugChannel)
                         issues_found += 1
