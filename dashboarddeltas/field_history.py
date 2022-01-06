@@ -1,5 +1,5 @@
 import argparse, re, subprocess, json, sys
-
+from datetime import datetime
 # python3 field_history.py data/daily-stats-v2.json data.cases.LATEST_TOTAL_CONFIRMED_CASES
 
 # python3 field_history.py data/daily-stats-v2.json data.vaccinations.CUMMULATIVE_DAILY_DOSES_ADMINISTERED data.cases.LATEST_TOTAL_CONFIRMED_CASES data.cases.LATEST_CONFIDENT_AVG_CASE_RATE_PER_100K_7_DAYS data.deaths.LATEST_TOTAL_CONFIRMED_DEATHS data.deaths.LATEST_CONFIDENT_AVG_DEATH_RATE_PER_100K_7_DAYS data.tests.LATEST_CONFIDENT_POSITIVITY_RATE_7_DAYS
@@ -9,14 +9,18 @@ import argparse, re, subprocess, json, sys
 
 parser = argparse.ArgumentParser(description='Average CSV Daily')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
+parser.add_argument('-vv', '--vverbose', default=False, action='store_true', help='Very Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test')
-parser.add_argument('-sd', '--start_date', default="2021-01-25", help='Start Date')
+parser.add_argument('-sd', '--start_date', help='Start Date')
 parser.add_argument('-o','--org',default='cagov',help="Org, default=%(default)s")
 parser.add_argument('-r','--repo',default='covid-static-data',help="Repo, default=%(default)s")
 # example data/daily-stats-v2.json
 parser.add_argument('infile', help='Input JSON File')
 parser.add_argument('fields', nargs='*', help='Field list')
 args = parser.parse_args()
+
+if args.vverbose:
+    args.verbose = True
 
 repo = args.repo
 
@@ -26,41 +30,43 @@ repo = args.repo
 # for this file produce a list of checkins for the past 6 months (in order), sorted by timestamp.
 # consider doing this with the API...
 # git log --pretty=format:"%H - %ad" data/daily-stats-v2.json  (descending order, save the 1st from each date)
-
+# 8b45f4887301b7665be19f54e84caf9f23508e5a - 2022-01-05
+#
 def get_field(jdata, field_name):
     f = jdata
     for nom in field_name.split('.'):
         f = f[nom]
     return f
 
-cmd = "cd ../../%s; git log --pretty=format:\"%%H - %%ad\" '%s'; cd -" % (args.repo, args.infile)
+cmd = "cd ../../%s; git log --pretty=format:\"%%H - %%as\" '%s'; cd -" % (args.repo, args.infile)
 if args.verbose:
     print("CMD: " + cmd)
 res = subprocess.run(cmd, shell=True, check=True, capture_output=True)
 # print("res",res)
 last_date = None
 commit_list = []
+
 for linein in res.stdout.split(b'\n'):
     line = linein.decode('utf-8')
     # fc406d58f9913044a5cb47746ba5aba9280ecaa8 - Sat May 15 09:05:10cd  2021 -0700
-    m = re.match(r'^([a-f0-9]+) - (\w\w\w \w\w\w \d+) (\d\d:\d\d:\d\d) (\d\d\d\d)', line)
+    m = re.match(r'^([a-f0-9]+) - (\d\d\d\d-\d\d-\d\d)', line)
     if m:
         commit_id = m.group(1)
-        date_str = m.group(2)
-        time_str = m.group(3)
-        year_str = m.group(4)
-        daily_str = date_str+' '+year_str
+        daily_str = m.group(2)
         # reject all temporary checkins for which there is a later check-in on the same date.
         #
+        # datetime.strptime(string,'%Y-%m-%d')
         if last_date == None or last_date != daily_str:
             last_date = daily_str
-            # print(commit_id, date_str, year_str)
+            # print(commit_id, daily_str)
             commit_list.append((commit_id,daily_str))
     else:
-        if args.verbose:
+        if args.vverbose:
             print("Mismatch '%s'\n" % (line))
+if args.vverbose:
+    print("Commit list length ",len(commit_list))
 
-if args.verbose:
+if args.vverbose:
     print("LAST DATE: ", commit_list[0])
 
 report = {}
@@ -69,9 +75,18 @@ for fldname in args.fields:
     report[fldname] = {'min_val':None, 'max_val':None,'min_change':0, 'max_change':0,'min_factor':0,'max_factor':0,'last_v':None}
 
 cnt = 0
+is_past_start_date = (args.start_date == None)
+
 for commit_id,commit_date in reversed(commit_list):
-    if args.verbose:
+
+    if commit_date == args.start_date:
+        is_past_start_date = True
+    if not is_past_start_date:
+        continue
+
+    if args.vverbose:
         print("Commit_ID",commit_id)
+
     cmd = "curl -s https://raw.githubusercontent.com/%s/%s/%s/%s" % (args.org, args.repo, commit_id,args.infile)
     # print(cmd)
     if args.test:
@@ -85,13 +100,13 @@ for commit_id,commit_date in reversed(commit_list):
     for fldname in args.fields:
         try:
             v = get_field(jdata, fldname)
+            if args.verbose:
+                print("%s, %s, %s" % (commit_date, fldname, v))
         except Exception as e:
             continue
-        if args.verbose:
+        if args.vverbose:
             print(fldname, get_field(jdata, fldname))
         rep = report[fldname]
-        if (args.verbose):
-            print("Date: %s " % (commit_date),v)
         if rep['last_v'] == None:
             rep['min_val'] = v
             rep['max_val'] = v
