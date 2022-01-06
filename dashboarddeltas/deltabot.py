@@ -143,11 +143,14 @@ try:
             curdata = json.loads(jr.text)
 
             if filename in deltabase and not args.reset:
-                old_date = get_field(deltabase[filename], file_rec['pdate_field'])
-                new_date = get_field(curdata, file_rec['pdate_field'])
-                if new_date == old_date:
-                    if args.verbose:
-                        print("File %s is unchanged" % (filename))
+                old_date = datetime.strptime(get_field(deltabase[filename], file_rec['pdate_field']),'%Y-%m-%d')
+                new_date = datetime.strptime(get_field(curdata, file_rec['pdate_field']),'%Y-%m-%d')
+                if new_date <= old_date:
+                    if new_date < old_date:
+                        print("Date went backwards, ignoring")
+                    else:
+                        if args.verbose:
+                            print("File %s is unchanged" % (filename))
                     continue
                 # do field by field comparisons here...
                 if args.verbose:
