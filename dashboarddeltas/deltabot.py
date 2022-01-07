@@ -1,7 +1,7 @@
 # deltabot
 import sys, time, argparse, importlib
 import requests, json
-from datetime import datetime, timedelta
+from datetime import datetime
 from pytz import timezone
 
 # reopen stdout as utf-8, to avoid encoding errors on console messages
@@ -170,6 +170,7 @@ try:
                     print("File %s has changed, checking" % (filename))
                 issues_found = 0
                 for frec in file_rec['fields_of_interest']:
+                    days = 1
                     if 'date_check' in frec:
                         old_fdate = get_field(deltabase[filename], frec['date_check'])
                         new_fdate = get_field(curdata, frec['date_check'])
@@ -177,6 +178,7 @@ try:
                             if args.verbose:
                                 print("Field %s date is unchanged" % (frec['field']))
                             continue
+                        days = (datetime.strptime(new_fdate,'%Y-%m-%d')-datetime.strptime(old_fdate,'%Y-%m-%d')).days
                     old_value = get_field(deltabase[filename], frec['field'])
                     new_value = get_field(curdata, frec['field'])
                     if old_value == new_value and \
@@ -184,9 +186,9 @@ try:
                         perform_warning(file_rec, frec, old_value, new_value, "has not changed, but was expected to")
                         issues_found += 1
                     min_value, max_value, min_change, max_change, min_growth, max_growth = frec['params']
-                    delta = new_value - old_value
+                    delta = (new_value - old_value) / float(days)
                     try:
-                        growth = (new_value / old_value) - 1.0
+                        growth = (new_value / (new_value-delta)) - 1.0
                     except Exception as e:
                         growth = 0
                     # deaths daily average: TRIGGER SINK: old: 45.285714 new: 40.857143 delta: -4.428571 growth: -0.097792 min_change -0.01950, min_growth: -0.12003

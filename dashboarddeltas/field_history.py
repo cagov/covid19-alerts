@@ -2,16 +2,18 @@ import argparse, re, subprocess, json, sys
 from datetime import datetime
 # python3 field_history.py data/daily-stats-v2.json data.cases.LATEST_TOTAL_CONFIRMED_CASES
 
-# python3 field_history.py data/daily-stats-v2.json data.vaccinations.CUMMULATIVE_DAILY_DOSES_ADMINISTERED data.cases.LATEST_TOTAL_CONFIRMED_CASES data.cases.LATEST_CONFIDENT_AVG_CASE_RATE_PER_100K_7_DAYS data.deaths.LATEST_TOTAL_CONFIRMED_DEATHS data.deaths.LATEST_CONFIDENT_AVG_DEATH_RATE_PER_100K_7_DAYS data.tests.LATEST_CONFIDENT_POSITIVITY_RATE_7_DAYS
+# python3 field_history.py data/daily-stats-v2.json data.vaccinations.CUMMULATIVE_DAILY_DOSES_ADMINISTERED data.cases.LATEST_TOTAL_CONFIRMED_CASES data.cases.LATEST_CONFIDENT_AVG_CASE_RATE_PER_100K_7_DAYS data.deaths.LATEST_TOTAL_CONFIRMED_DEATHS data.deaths.LATEST_CONFIDENT_AVG_DEATH_RATE_PER_100K_7_DAYS data.tests.LATEST_TOTAL_TESTS_PERFORMED data.tests.NEWLY_REPORTED_TESTS data.tests.LATEST_CONFIDENT_POSITIVITY_RATE_7_DAYS data.hospitalizations.HOSPITALIZED_COVID_CONFIRMED_PATIENTS data.icu.ICU_COVID_CONFIRMED_PATIENTS
 # python3 field_history.py data/dashboard/vaccines/sparkline.json data.population.DAILY_AVERAGE data.population.TOTAL_VAXED_RATIO
 # python3 field_history.py data/dashboard/confirmed-cases/california.json data.latest.CONFIRMED_CASES.CASES_DAILY_AVERAGE
 # python3 field_history.py data/dashboard/confirmed-deaths/california.json data.latest.CONFIRMED_DEATHS.DEATHS_DAILY_AVERAGE
+# python3 field_history.py data/dashboard/postvax/california.json 'data[-1].UNVAX_CASE_RATE' 'data[-1].BREAKTHROUGH_CASE_RATE'
 
 parser = argparse.ArgumentParser(description='Average CSV Daily')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
 parser.add_argument('-vv', '--vverbose', default=False, action='store_true', help='Very Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test')
 parser.add_argument('-sd', '--start_date', help='Start Date')
+parser.add_argument('-l', '--growth_limit', type=float, default=1.0, help='Growth Limit')
 parser.add_argument('-o','--org',default='cagov',help="Org, default=%(default)s")
 parser.add_argument('-r','--repo',default='covid-static-data',help="Repo, default=%(default)s")
 # example data/daily-stats-v2.json
@@ -81,12 +83,14 @@ if args.vverbose:
 report = {}
 
 for fldname in args.fields:
-    report[fldname] = {'min_val':None, 'max_val':None,'min_change':0, 'max_change':0,'min_factor':0,'max_factor':0,'last_v':None}
+    report[fldname] = {'last_date':None, 'min_val':None, 'max_val':None,'min_change':0, 'max_change':0,'min_factor':0,'max_factor':0,'last_v':None}
 
 cnt = 0
 is_past_start_date = (args.start_date == None)
 
 for commit_id,commit_date in reversed(commit_list):
+
+    cdate = datetime.strptime(commit_date,'%Y-%m-%d')
 
     if args.start_date != None and commit_date >= args.start_date:
         is_past_start_date = True
@@ -126,22 +130,37 @@ for commit_id,commit_date in reversed(commit_list):
             rep['max_val'] = v
             rep['changes'] = 0
             rep['records'] = 0
+            rep['last_date'] = cdate
+        elif v == rep['last_v']:
+            if args.verbose:
+                print("Ignoring",v,rep['last_v'])
+            continue
         else:
-            rep['min_val'] = min(rep['min_val'], v)
-            rep['max_val'] = max(rep['max_val'], v)
-            if rep['last_v'] != 0 and v / rep['last_v'] - 1 < 1 and v / rep['last_v'] - 1 > -1: # throw out anomalies
-                rep['min_change'] = min(v-rep['last_v'], rep['min_change'])
-                rep['max_change'] = max(v-rep['last_v'], rep['max_change'])
-                rep['max_factor'] = max(v / rep['last_v'] - 1, rep['max_factor'])
-                rep['min_factor'] = min(v / rep['last_v'] - 1, rep['min_factor'])
-            rep['records'] += 1
-            if v != rep['last_v']:
-                rep['changes'] += 1
+            days = (cdate - rep['last_date']).days
+            if days <= 7:
+                rep['min_val'] = min(rep['min_val'], v)
+                rep['max_val'] = max(rep['max_val'], v)
+                change = (v - rep['last_v']) / days
+                growth = (v / (v-change)) - 1
+                if rep['last_v'] != 0 and growth <= args.growth_limit and growth >= -args.growth_limit: # throw out anomalies
+                    rep['min_change'] = min(change, rep['min_change'])
+                    rep['max_change'] = max(change, rep['max_change'])
+                    rep['max_factor'] = max(growth, rep['max_factor'])
+                    rep['min_factor'] = min(growth, rep['min_factor'])
+                else:
+                    if args.verbose:
+                        print("Throwing out growth ",growth)
+                rep['last_date'] = cdate
+                rep['records'] += 1
+                if v != rep['last_v']:
+                    rep['changes'] += 1
+        rep['last_date'] = cdate
         rep['last_v'] = v
     cnt += 1
     if args.test and cnt > 5:
         break
-print("REPORT: ", report)
+if args.verbose:
+    print("REPORT: ", report)
 
 for fldname in args.fields:
     print("\nFIELD: " + fldname)
@@ -154,18 +173,16 @@ for fldname in args.fields:
     if rep['min_val'] == None:
         continue
     if abs(rep['min_val'] - rep['max_val']) < 1:
-        print("(%.5f, %.5f,  %.5f, %.5f,   %.5f, %.5f, %5.2f)" % (
+        print("(%.5f, %.5f,  %.5f, %.5f,   %.5f, %.5f)" % (
                 float(rep['min_val']), float(rep['max_val']),
                 float(rep['min_change']), float(rep['max_change']),
-                float(rep['min_factor']), float(rep['max_factor']),
-                float(rep['changes'])*100.0/float(rep['records'])
+                float(rep['min_factor']), float(rep['max_factor'])
                 ))
     else:
-        print("(%.1f, %.1f,  %.1f, %.1f,   %.6f, %.6f, %5.2f)" % (
+        print("(%.1f, %.1f,  %.1f, %.1f,   %.6f, %.6f)" % (
                 float(rep['min_val']), float(rep['max_val']),
                 float(rep['min_change']), float(rep['max_change']),
-                float(rep['min_factor']), float(rep['max_factor']), 
-                float(rep['changes'])*100.0/float(rep['records'])
+                float(rep['min_factor']), float(rep['max_factor'])
                 ))
 
 # for each checkin, sorted by date-asc, read the raw file for that checkin and store the value.
