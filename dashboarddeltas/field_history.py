@@ -34,8 +34,17 @@ repo = args.repo
 #
 def get_field(jdata, field_name):
     f = jdata
-    for nom in field_name.split('.'):
-        f = f[nom]
+    toks = field_name.split('.')
+    for i,nom in enumerate(toks):
+        if '[' in nom: # includes array reference - we support -1 and 0,
+            m = re.match('(\w+)\[(.*)\]', nom)
+            if m:
+                fldnom = m.group(1)
+                idxval = m.group(2)
+                # print("Fetching %s[%d]" % (fldnom,int(idxval)), f)
+                f = f[fldnom][int(idxval)]
+        else:
+            f = f[nom]
     return f
 
 cmd = "cd ../../%s; git log --pretty=format:\"%%H - %%as\" '%s'; cd -" % (args.repo, args.infile)
@@ -79,13 +88,17 @@ is_past_start_date = (args.start_date == None)
 
 for commit_id,commit_date in reversed(commit_list):
 
-    if commit_date == args.start_date:
+    if args.start_date != None and commit_date >= args.start_date:
         is_past_start_date = True
+    # if args.vverbose:
+    #     print("A Commit_ID",commit_id, commit_date)
+
+
     if not is_past_start_date:
         continue
 
     if args.vverbose:
-        print("Commit_ID",commit_id)
+        print("B Commit_ID",commit_id)
 
     cmd = "curl -s https://raw.githubusercontent.com/%s/%s/%s/%s" % (args.org, args.repo, commit_id,args.infile)
     # print(cmd)
@@ -103,6 +116,7 @@ for commit_id,commit_date in reversed(commit_list):
             if args.verbose:
                 print("%s, %s, %s" % (commit_date, fldname, v))
         except Exception as e:
+            print("Exception fetching field",e)
             continue
         if args.vverbose:
             print(fldname, get_field(jdata, fldname))
@@ -115,7 +129,7 @@ for commit_id,commit_date in reversed(commit_list):
         else:
             rep['min_val'] = min(rep['min_val'], v)
             rep['max_val'] = max(rep['max_val'], v)
-            if v / rep['last_v'] - 1 < 1 and v / rep['last_v'] - 1 > -1: # throw out anomalies
+            if rep['last_v'] != 0 and v / rep['last_v'] - 1 < 1 and v / rep['last_v'] - 1 > -1: # throw out anomalies
                 rep['min_change'] = min(v-rep['last_v'], rep['min_change'])
                 rep['max_change'] = max(v-rep['last_v'], rep['max_change'])
                 rep['max_factor'] = max(v / rep['last_v'] - 1, rep['max_factor'])
@@ -127,6 +141,7 @@ for commit_id,commit_date in reversed(commit_list):
     cnt += 1
     if args.test and cnt > 5:
         break
+print("REPORT: ", report)
 
 for fldname in args.fields:
     print("\nFIELD: " + fldname)
@@ -136,6 +151,8 @@ for fldname in args.fields:
     #             float(min_change), float(max_change),
     #             float(min_factor)*100, float(max_factor)*100
     #             ))
+    if rep['min_val'] == None:
+        continue
     if abs(rep['min_val'] - rep['max_val']) < 1:
         print("(%.5f, %.5f,  %.5f, %.5f,   %.5f, %.5f, %5.2f)" % (
                 float(rep['min_val']), float(rep['max_val']),

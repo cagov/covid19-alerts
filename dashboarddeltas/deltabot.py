@@ -65,10 +65,23 @@ def saveDeltabase():
         delta_changes = False
 
 def get_field(jdata, field_name):
-    f = jdata
-    for nom in field_name.split('.'):
-        f = f[nom]
-    return f
+    try:
+        f = jdata
+        toks = field_name.split('.')
+        for i,nom in enumerate(toks):
+            if '[' in nom: # includes array reference - we support -1 and 0,
+                m = re.match('(\w+)\[(.*)\]', nom)
+                if m:
+                    fldnom = m.group(1)
+                    idxval = m.group(2)
+                    # print("Fetching %s[%d]" % (fldnom,int(idxval)), f)
+                    f = f[fldnom][int(idxval)]
+            else:
+                f = f[nom]
+        return f
+    except KeyError as e:
+        print("Exception getting field %s from" % (field_name),jdata)
+        sys.exit()
 
 
 def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage, channel=slackAlertChannel):
@@ -180,7 +193,7 @@ try:
 
                     if growth < dbot_config.trigger_factor * min_growth:
                         if args.verbose:
-                            print("TRIGGER SINK %s: old: %f new: %f delta: %f growth: %f min_change %.5f, min_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, min_change, min_growth))
+                            print("TRIGGER SINK %s: old: %f new: %f delta: %f growth: %f min_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, min_growth))
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has sunk at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1
@@ -190,7 +203,7 @@ try:
                         issues_found += 1
                     if growth > dbot_config.trigger_factor * max_growth:
                         if args.verbose:
-                            print("TRIGGER RISE %s: old: %f new: %f delta: %f growth: %f max_change %.5f, max_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, max_change, max_growth))
+                            print("TRIGGER RISE %s: old: %f new: %f delta: %f growth: %f max_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, max_growth))
                         perform_warning(file_rec, frec, old_value, new_value, 
                                 "has risen at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1

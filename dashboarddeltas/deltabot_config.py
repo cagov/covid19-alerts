@@ -43,12 +43,37 @@ file_list = [
             'params':(0.01851, 0.25097,  -0.01958, 0.02670,   -0.12003, 0.78948),
             'flags':()
         },
+        {   'desc':'Total Tests',
+            'field':'data.tests.LATEST_TOTAL_TESTS_PERFORMED',
+            'date_check': 'data.tests.DATE',
+            'params':(52765254.0, 121959422.0,  0.0, 9560986.0,   0.000000, 0.181199),
+            'flags':('always_changes')
+        },
+        {   'desc':'Newly Reported Tests',
+            'field':'data.tests.NEWLY_REPORTED_TESTS',
+            'date_check': 'data.tests.DATE',
+            'params':(45230.0, 1498225.0,  -1285662.0, 503583.0,   -0.909324, 0.968579),
+            'flags':('always_changes')
+        },
         {   'desc':'Test Positivity Rate',
             'field':'data.tests.LATEST_CONFIDENT_POSITIVITY_RATE_7_DAYS',
             'date_check': 'data.tests.DATE',
             'params':(0.00700, 0.20379,  -0.00941, 0.04473,   -0.43868, 0.79013),
             'flags':('always_changes')
         },
+        {   'desc':'Total Hospitalizations',
+            'field':'data.hospitalizations.HOSPITALIZED_COVID_CONFIRMED_PATIENTS',
+            'date_check': 'data.hospitalizations.DATE',
+            'params':(915.0, 8353.0,  -915.0, 627.0,   -0.373622, 0.5),
+            'flags':('always_changes')
+        },
+        {   'desc':'Total ICU',
+            'field':'data.icu.ICU_COVID_CONFIRMED_PATIENTS',
+            'date_check': 'data.icu.DATE',
+            'params':(219.0, 2128.0,  -255.0, 192.0,   -0.397816, 0.181070),
+            'flags':('always_changes')
+        },
+        # Hospitalization Changee and ICU change is sometimes zero which produces issues
     ]
   },
   {
@@ -63,7 +88,7 @@ file_list = [
         },
         {   'desc':'Pct Population Vaxed',
             'field':'data.population.TOTAL_VAXED_RATIO',
-            'params': (0.73717, 0.81433,-0.07716, 0.00186, -0.09476,0.00252),
+            'params': (0.73717, 0.81433,-0.07716, 0.00186, -0.09476,0.003),
             'flags':('always_changes')
         },
     ]
@@ -75,7 +100,7 @@ file_list = [
     'fields_of_interest': [
         {   'desc':'Cases Daily Avg',
             'field':'data.latest.CONFIRMED_CASES.CASES_DAILY_AVERAGE',
-            'params':(3654.3, 10280.4, -1063.6, 2509.4, -0.115185, 0.40631),
+            'params':(3654.3, 10280.4, -1063.6, 2509.4, -0.115185, 1.0),
             'flags':('always_changes')
         },
     ]
@@ -88,6 +113,25 @@ file_list = [
         {   'desc':'Deaths Daily Avg',
             'field':'data.latest.CONFIRMED_DEATHS.DEATHS_DAILY_AVERAGE',
             'params':(42, 102.7,  -10, 5,   -0.125616, 0.102941),
+            'flags':('always_changes')
+        },
+    ]
+  },
+  {
+    'filename': 'data/dashboard/postvax/california.json',
+    'branch': 'CovidStateDashboardPostvax_Staging',
+    'pdate_field': 'meta.PUBLISHED_DATE',
+    'fields_of_interest': [
+        {   'desc':'Unvax Case Rate',
+            'date_check': 'data[-1].DATE',
+            'field':'data[-1].UNVAX_CASE_RATE',
+            'params':(19.4, 300.7,  -18.0, 16.0,   -0.4, 1.0),
+            'flags':('always_changes')
+        },
+        {   'desc':'Breakthrough Case Rate',
+            'date_check': 'data[-1].DATE',
+            'field':'data[-1].BREAKTHROUGH_CASE_RATE',
+            'params':(2.6, 77.0,  -2.0, 2.1,   -0.4, 1.0),
             'flags':('always_changes')
         },
     ]
