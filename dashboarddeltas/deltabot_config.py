@@ -1,7 +1,7 @@
 # demandbot_config.py
 trigger_factor = 2.0
 deltabase_name = 'deltabase.json'
-holidays = ['2022-01-03']
+# holidays = ['2022-01-03']
 busy_sleep = 60*5
 offhours_sleep = 60*60
 # param order is:

@@ -50,7 +50,7 @@ def get_field(jdata, field_name):
     return f
 
 cmd = "cd ../../%s; git log --pretty=format:\"%%H - %%as\" '%s'; cd -" % (args.repo, args.infile)
-if args.verbose:
+if args.vverbose:
     print("CMD: " + cmd)
 res = subprocess.run(cmd, shell=True, check=True, capture_output=True)
 # print("res",res)
@@ -101,9 +101,6 @@ for commit_id,commit_date in reversed(commit_list):
     if not is_past_start_date:
         continue
 
-    if args.vverbose:
-        print("B Commit_ID",commit_id)
-
     cmd = "curl -s https://raw.githubusercontent.com/%s/%s/%s/%s" % (args.org, args.repo, commit_id,args.infile)
     # print(cmd)
     if args.test:
@@ -132,7 +129,7 @@ for commit_id,commit_date in reversed(commit_list):
             rep['records'] = 0
             rep['last_date'] = cdate
         elif v == rep['last_v']:
-            if args.verbose:
+            if args.vverbose:
                 print("Ignoring",v,rep['last_v'])
             continue
         else:
@@ -172,18 +169,21 @@ for fldname in args.fields:
     #             ))
     if rep['min_val'] == None:
         continue
-    if abs(rep['min_val'] - rep['max_val']) < 1:
-        print("(%.5f, %.5f,  %.5f, %.5f,   %.5f, %.5f)" % (
-                float(rep['min_val']), float(rep['max_val']),
-                float(rep['min_change']), float(rep['max_change']),
-                float(rep['min_factor']), float(rep['max_factor'])
-                ))
-    else:
-        print("(%.1f, %.1f,  %.1f, %.1f,   %.6f, %.6f)" % (
-                float(rep['min_val']), float(rep['max_val']),
-                float(rep['min_change']), float(rep['max_change']),
-                float(rep['min_factor']), float(rep['max_factor'])
-                ))
+    print("  range       : ", (float(rep['min_val']), float(rep['max_val'])))
+    print("  change_range: ", (float(rep['min_change']), float(rep['max_change'])))
+    print("  growth_range: ", (float(rep['min_factor']), float(rep['max_factor'])))
+    # if abs(rep['min_val'] - rep['max_val']) < 1:
+    #     print("(%.5f, %.5f,  %.5f, %.5f,   %.5f, %.5f)" % (
+    #             float(rep['min_val']), float(rep['max_val']),
+    #             float(rep['min_change']), float(rep['max_change']),
+    #             float(rep['min_factor']), float(rep['max_factor'])
+    #             ))
+    # else:
+    #     print("(%.1f, %.1f,  %.1f, %.1f,   %.6f, %.6f)" % (
+    #             float(rep['min_val']), float(rep['max_val']),
+    #             float(rep['min_change']), float(rep['max_change']),
+    #             float(rep['min_factor']), float(rep['max_factor'])
+    #             ))
 
 # for each checkin, sorted by date-asc, read the raw file for that checkin and store the value.
 # https://raw.githubusercontent.com/<REPO>/<LONG_COMMIT_NO>/<FILENAME>data/daily-stats-v2.json

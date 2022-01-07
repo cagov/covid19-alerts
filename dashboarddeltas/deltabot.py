@@ -112,14 +112,14 @@ def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage, channe
         print("Posting warning about %s %s" % (filerec['filename'], fieldrec['field']))
 
 # UNUSED
-def is_weekday():
-    global dbot_config
-    now = datetime.now().astimezone(timezone('US/Pacific'))
-    fulldate = now.strftime('%Y-%m-%d')
-    dayofweek = now.strftime('%a')
-    if fulldate in dbot_config.holidays:
-        return False
-    return dayofweek in ('Mon','Tue','Wed','Thu','Fri')
+# def is_weekday():
+#     global dbot_config
+#     now = datetime.now().astimezone(timezone('US/Pacific'))
+#     fulldate = now.strftime('%Y-%m-%d')
+#     dayofweek = now.strftime('%a')
+#     if fulldate in dbot_config.holidays:
+#         return False
+#     return dayofweek in ('Mon','Tue','Wed','Thu','Fri')
 
 loadDeltabase()
 runs = 0
