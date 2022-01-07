@@ -148,7 +148,8 @@ try:
                 print("Processing %s" % (file_rec['filename']))
             filename = file_rec['filename']
             branch = args.branch_override if args.branch_override else file_rec['branch']
-            # read filename from branch (or use branch override)
+
+            # read filename from branch
             url = 'https://raw.githubusercontent.com/%s/%s/%s/%s' % (
                 args.org, args.repo, branch, filename
             )
@@ -185,13 +186,12 @@ try:
                         'always_changes' in frec['flags']:
                         perform_warning(file_rec, frec, old_value, new_value, "has not changed, but was expected to")
                         issues_found += 1
-                    min_value, max_value, min_change, max_change, min_growth, max_growth = frec['params']
+                    min_growth, max_growth = frec['expected_growth_range']
                     delta = (new_value - old_value) / float(days)
                     try:
                         growth = (new_value / (new_value-delta)) - 1.0
                     except Exception as e:
                         growth = 0
-                    # deaths daily average: TRIGGER SINK: old: 45.285714 new: 40.857143 delta: -4.428571 growth: -0.097792 min_change -0.01950, min_growth: -0.12003
 
                     if growth < dbot_config.trigger_factor * min_growth:
                         if args.verbose:

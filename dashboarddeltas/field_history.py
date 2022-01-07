@@ -159,7 +159,7 @@ for commit_id,commit_date in reversed(commit_list):
     cnt += 1
     if args.test and cnt > 5:
         break
-if args.verbose:
+if args.vverbose:
     print("REPORT: ", report)
 
 for fldname in args.fields:
