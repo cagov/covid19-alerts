@@ -3,6 +3,7 @@ import sys, time, argparse, importlib
 import requests, json
 from datetime import datetime
 from pytz import timezone
+import re
 
 # reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)

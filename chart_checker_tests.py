@@ -6,6 +6,13 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'tracker-boxes',
     },
+    {
+        'nom':'DATE_DASHBOARD',
+        'url':'https://covid19.ca.gov/state-dashboard',
+        'pat':r'<p class="small-text">(?:Updated|Vaccines administered updated) (.*?) at',
+        'test_type':'DATE_MATCHES_TODAY',
+        'bnom':'update-date',
+    },
     # {
     #     'nom':'DATE_CASES',
     #     'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-cases/california.json?x=aa',

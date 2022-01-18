@@ -272,13 +272,13 @@ try:
                 new_items = list(set(updated_items_new).difference(set(updated_items_prev)))
                 if last_res_mask == FM_EXPECTED_STALE_PASSES:
                     if len(new_items) > 0:
-                        broadcast_msg = '/state-dashboard/ updates are starting (%s updated)' % (','.join(new_items))
+                        broadcast_msg = '/state-dashboard/ updates are starting (%s updated)' % (', '.join(new_items))
                     else:
                         broadcast_msg = '/state-dashboard/ updates are starting'
                     big_broadcast = True
                 else:
                     if len(new_items) > 0:
-                        broadcast_msg = '/state-dashboard/ has been partially updated (%s updated)' % (','.join(new_items))
+                        broadcast_msg = '/state-dashboard/ has been partially updated (%s updated)' % (', '.join(new_items))
                     else:
                         broadcast_msg = '/state-dashboard/ has been partially updated'
 
