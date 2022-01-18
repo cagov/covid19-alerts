@@ -74,7 +74,7 @@ def updateWordbase(q):
                                     " (won't show: %s)" % (reason) if reason != '' else '')
         print("[DemandBot] " + msg)
         # advertise it...
-        if not args.test:
+        if not args.test and not args.quiet:
             post_message_to_slack(msg, channel=slackAlertChannel)
             post_message_to_slack(msg, channel=slackPageFeedbackChannel)
 
