@@ -12,7 +12,7 @@ import re, sys, time, argparse, importlib
 from datetime import datetime, timedelta
 from pytz import timezone
 import requests, json
-from chart_checker_tests import chart_tests
+# from chart_checker_tests import chart_tests
 from jbum_pushover import pushover_app_token, pushover_user_key
 
 # reopen stdout as utf-8, to avoid encoding errors on console messages
@@ -26,6 +26,8 @@ parser.add_argument('-config', default="cagov_config", help='Config file name pr
 args = parser.parse_args()
 
 cagov_config = importlib.import_module(args.config)
+chart_checker_tests = importlib.import_module('chart_checker_tests')
+chart_tests = chart_checker_tests.chart_tests
 from slack_credentials import slackbot_token
 from slack_info import slackAlertChannel, slackStateDashChannel, slackJimDebugChannel
 
@@ -214,6 +216,8 @@ try:
                 print("Sleeping",sleep_secs)
             time.sleep(sleep_secs)
         importlib.reload(cagov_config)
+        importlib.reload(chart_checker_tests)
+        chart_tests = chart_checker_tests.chart_tests
         try:
             res, msgs, exception_occured = do_tests()
             runs += 1
