@@ -167,19 +167,7 @@ def do_tests():
     return passes, msgs, exception_occured
 
 
-# compute flags here...
-FM_DATE_TESTS = 0
-FM_CONTENT_TESTS = 0
-for i,trec in enumerate(chart_tests):
-    if 'DATE' in trec['test_type']:
-        FM_DATE_TESTS |= (1 << i)
-    else:
-        FM_CONTENT_TESTS |= (1 << i)
-FM_ALL_DONE = FM_DATE_TESTS | FM_CONTENT_TESTS
-
-
 def compute_done_mask():
-    global FM_DATE_TESTS, FM_CONTENT_TESTS
     isWeekend = datetime.now().weekday() >= 5
     FM_DATE_TESTS = 0
     FM_CONTENT_TESTS = 0
@@ -190,7 +178,7 @@ def compute_done_mask():
             FM_DATE_TESTS |= (1 << i)
         else:
             FM_CONTENT_TESTS |= (1 << i)
-    return FM_DATE_TESTS | FM_CONTENT_TESTS
+    return (FM_DATE_TESTS, FM_CONTENT_TESTS, FM_DATE_TESTS | FM_CONTENT_TESTS)
 
 # work out expected pass pattern for pre-9am tests
 def compute_staleness_mask():
@@ -203,6 +191,7 @@ def compute_staleness_mask():
                 FM_EXPECTED_STALE_PASSES |= (1 << i)
     return FM_EXPECTED_STALE_PASSES
 
+FM_DATE_TESTS, FM_CONTENT_TESTS, FM_ALL_DONE = compute_done_mask()
 last_res_mask = FM_ALL_DONE
 runs = 0
 stale_alert_issued = False
@@ -215,7 +204,7 @@ try:
             now = datetime.now().astimezone(timezone('US/Pacific'))
 
             # recompute expected staleness mask here...
-            FM_ALL_DONE = compute_done_mask()
+            FM_DATE_TESTS, FM_CONTENT_TESTS, FM_ALL_DONE = compute_done_mask()
             FM_EXPECTED_STALE_PASSES = compute_staleness_mask()
 
             if (now.hour == 9 or now.hour == 10) and last_res_mask != FM_ALL_DONE:
