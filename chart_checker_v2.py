@@ -12,6 +12,8 @@ import re, sys, time, argparse, importlib
 from datetime import datetime, timedelta
 from pytz import timezone
 import requests, json
+from xml.dom.minidom import parseString
+
 # from chart_checker_tests import chart_tests
 from jbum_pushover import pushover_app_token, pushover_user_key
 
@@ -124,6 +126,10 @@ def do_tests():
                     r = fetch_url(trec['url'])
                     datetgt = fetch_str(trec['pat'], r.text.replace("\n"," "))
                 is_pass = datetgt == now_snowdate
+            elif trec['test_type'] == 'SVG_META_DATE_MATCHES_TODAYSNOW':
+                r = fetch_url(trec['url'])
+                datetgt = json.loads(parseString(r.text).documentElement.getAttribute('meta'))[trec['meta_field']]
+                is_pass = datetgt == now_snowdate
             elif trec['test_type'] == 'WEEKDATE_GTE_WEDNESDAY':
                 from datetime import date as dtdate
                 from datetime import time as dttime
@@ -150,7 +156,7 @@ def do_tests():
         except Exception as e:
             is_pass = False
             exception_occured = True
-            print ("!! exception")
+            print ("!! exception on ",trec)
             print(e)
             msgs.append("%s !! exception" % (trec['nom']))
             continue
@@ -201,10 +207,6 @@ try:
             # random sleep
             now = datetime.now().astimezone(timezone('US/Pacific'))
 
-            # recompute expected staleness mask here...
-            FM_DATE_TESTS, FM_CONTENT_TESTS, FM_ALL_DONE, FM_EXPECTED_STALE_PASSES = compute_expected_passes()
-            # FM_EXPECTED_STALE_PASSES = compute_staleness_mask()
-
             if (now.hour == 9 or now.hour == 10) and last_res_mask != FM_ALL_DONE:
                 sleep_secs = 30
             elif last_res_mask == FM_ALL_DONE:
@@ -218,8 +220,11 @@ try:
             if args.verbose:
                 print("Sleeping",sleep_secs)
             time.sleep(sleep_secs)
+
         importlib.reload(cagov_config)
         importlib.reload(chart_checker_tests)
+        # recompute masks upon waking up and reloading tests
+        FM_DATE_TESTS, FM_CONTENT_TESTS, FM_ALL_DONE, FM_EXPECTED_STALE_PASSES = compute_expected_passes()
         chart_tests = chart_checker_tests.chart_tests
         try:
             res, msgs, exception_occured = do_tests()
