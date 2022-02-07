@@ -13,6 +13,18 @@ drought_wp_url_pages = 'https://live-drought-ca-gov.pantheonsite.io/wp-json/wp/v
 removals = [
     r'<p class="small-text">Last upd.*?</p>'
 ]
+
+holidays = ['2022-02-21', # presidents day
+            '2022-03-31', # cesar chavez day
+            '2022-05-30', # memorial day
+            '2022-07-04', # independence day
+            '2022-09-05', # labor day
+            '2022-11-11', # veterens day
+            '2022-11-24', # thanksgiving
+            '2022-11-25', # day after thanksgiving
+            '2022-12-25', # christmas
+            ]
+
 '''
 to eliminate
 

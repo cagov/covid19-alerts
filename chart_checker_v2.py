@@ -34,15 +34,16 @@ from slack_credentials import slackbot_token
 from slack_info import slackAlertChannel, slackStateDashChannel, slackJimDebugChannel
 
 def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
-    return requests.post('https://slack.com/api/chat.postMessage', {
-        'token': slackbot_token,
-        'channel': channel,
-        'text': text,
-        'icon_emoji': ':pipe:',
-        # 'icon_url': slack_icon_url,
-        # 'username': slack_user_name,
-        'blocks': json.dumps(blocks) if blocks else None
-    }).json()
+    if not args.quiet:
+        requests.post('https://slack.com/api/chat.postMessage', {
+            'token': slackbot_token,
+            'channel': channel,
+            'text': text,
+            'icon_emoji': ':pipe:',
+            # 'icon_url': slack_icon_url,
+            # 'username': slack_user_name,
+            'blocks': json.dumps(blocks) if blocks else None
+        }).json()
 
 def send_pushover(message, title='CAGOVAlert', url=None, url_title=None):
     global args
@@ -114,22 +115,19 @@ def do_tests():
                 # pass
                 is_pass = True
             elif trec['test_type'] == 'DATE_MATCHES_TODAY':
-                r = fetch_url(trec['url'])
-                datestr = fetch_str(trec['pat'], r.text.replace("\n"," "))
-                is_pass = datestr == now_datestr
-            elif trec['test_type'] == 'DATE_MATCHES_TODAYSNOW':
                 if 'json_url' in trec:
                     jr = fetch_url(trec['json_url'])
                     data = json.loads(jr.text)
-                    datetgt = fetch_json_field(data, trec['json_field'])
+                    datestr = fetch_json_field(data, trec['json_field'])
+                    is_pass = datestr == now_snowdate
+                elif 'svg_url' in trec:
+                    jr = fetch_url(trec['svg_url'])
+                    datestr = json.loads(parseString(jr.text).documentElement.getAttribute('meta'))[trec['meta_field']]
+                    is_pass = datestr == now_snowdate
                 else:
                     r = fetch_url(trec['url'])
-                    datetgt = fetch_str(trec['pat'], r.text.replace("\n"," "))
-                is_pass = datetgt == now_snowdate
-            elif trec['test_type'] == 'SVG_META_DATE_MATCHES_TODAYSNOW':
-                r = fetch_url(trec['url'])
-                datetgt = json.loads(parseString(r.text).documentElement.getAttribute('meta'))[trec['meta_field']]
-                is_pass = datetgt == now_snowdate
+                    datestr = fetch_str(trec['pat'], r.text.replace("\n"," "))
+                    is_pass = datestr == now_datestr
             elif trec['test_type'] == 'WEEKDATE_GTE_WEDNESDAY':
                 from datetime import date as dtdate
                 from datetime import time as dttime
@@ -172,20 +170,28 @@ def do_tests():
     msgs.append("%d/%d tests pass" % (total_passes, total_tests))
     return passes, msgs, exception_occured
 
+# EXPECTED_STALE_PASSES - tests expected to PASS after midnight
+# FM_ALL_DONE - tests expected to PASS after 9:30
+# FM_DATE_TESTS - DATE tests expected to PASS after 9:30
+# FM_CONTENT_TESTS - content tests expected to fail around 9:20, but pass at 9:30
 
 def compute_expected_passes():
     isWeekend = datetime.now().weekday() >= 5
+    isMonSat = datetime.now().weekday() >= 6
     isWednesday = datetime.now().weekday() == 2
+    now_snowdate = datetime.today().strftime('%Y-%m-%d')
+    isHoliday = now_snowdate in cagov_config.holidays
+
     FM_DATE_TESTS = 0 # dates expected to pass post 9am
     FM_CONTENT_TESTS = 0 # content tests expected to pass (normally, all of them, all the time)
     FM_EXPECTED_STALE_PASSES = 0 # tests expected to pass from midnight to 9:30am
     for i,trec in enumerate(chart_tests):
         if 'DATE' in trec['test_type']:
-            if isWeekend and 'weekdays-only' in trec:
-                FM_EXPECTED_STALE_PASSES |= (1 << i)
-            else:
+            if not (isWeekend and 'weekdays-only' in trec) \
+               and not (isMonSat and 'monsat-only' in trec) \
+               and not (isHoliday and 'not-on-holidays' in trec):
                 FM_DATE_TESTS |= (1 << i)
-            if not isWednesday and 'WEEKDATE' in trec['test_type']:
+            if 'WEEKDATE' in trec['test_type'] and not isWednesday:
                 FM_EXPECTED_STALE_PASSES |= (1 << i)
         else:
             FM_CONTENT_TESTS |= (1 << i) # content expected to pass
@@ -242,8 +248,6 @@ try:
             
         # recompute expected staleness mask here...
         # FM_EXPECTED_STALE_PASSES = compute_staleness_mask()
-        if args.verbose:
-            print("Expected done_mask %x stale passes %x, date tests %x content tests %x" % (FM_ALL_DONE, FM_EXPECTED_STALE_PASSES, FM_DATE_TESTS, FM_CONTENT_TESTS))
 
         flag_mask = 0
         for i in range(len(res)):
@@ -254,6 +258,7 @@ try:
 
         if flag_mask != last_res_mask:
             print("STATUS CHANGE %s %02x" % ( datetime.now().strftime('%B %-d, %Y %H:%M:%S'), flag_mask ), res)
+            print("  Expected done_mask %x stale passes %x, date tests %x content tests %x" % (FM_ALL_DONE, FM_EXPECTED_STALE_PASSES, FM_DATE_TESTS, FM_CONTENT_TESTS))
             print(msgs)
             broadcast_msg = ''
 

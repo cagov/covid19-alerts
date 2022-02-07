@@ -1,3 +1,4 @@
+
 chart_tests = [
     {
         'nom':'DATE_SUMMARY',
@@ -13,14 +14,16 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'update-date',
         'weekdays-only':True,
+        'not-on-holidays':True,
     },
     {
         'nom':'DATE_CASES',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-cases/california.json?x=aa',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'cases-chart',
         'weekdays-only':True,
+        'not-on-holidays':True,
     },
     {
         'nom':'MATCH_CASES_TOTAL',
@@ -35,9 +38,10 @@ chart_tests = [
         'nom':'DATE_DEATHS',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/confirmed-deaths/california.json?x=cc',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'deaths-chart',
         'weekdays-only':True,
+        'not-on-holidays':True,
     },
     {
         'nom':'MATCH_DEATHS_TOTAL',
@@ -52,9 +56,10 @@ chart_tests = [
         'nom':'DATE_TESTS',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/total-tests/california.json?x=ee',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'tests-chart',
         'weekdays-only':True,
+        'not-on-holidays':True,
     },
     {
         'nom':'MATCH_TESTS',
@@ -64,64 +69,66 @@ chart_tests = [
         'nom':'DATE_GROUPS',
         'json_url':'https://data.covid19.ca.gov/data/infections-by-group/infections-by-group-california.json?x=mm',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'groups-chart',
     },
     {
         'nom':'DATE_POSITIVITY',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/positivity-rate/california.json?x=nn',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'positivity-chart',
         'weekdays-only':True,
+        'not-on-holidays':True,
     },
     {
         'nom':'DATE_PATIENTS',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/patients/california.json?x=ff ',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'patients-chart',
     },
     {
         'nom':'DATE_ICUBEDS',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/icu-beds/california.json?x=gg',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'icu-beds-chart',
     },
     {
         'nom':'DATE_VACCINE_SPARKLINES_DATA',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/vaccines/sparkline.json?x=hh',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_MATCHES_TODAYSNOW',
+        'test_type':'DATE_MATCHES_TODAY',
         'bnom':'vaccines-sparklines-data',
         'weekdays-only':True,
+        'not-on-holidays':True,
     },
     {
-        'nom':'SPARKLINE_CASES',
-        'url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-cases.svg?x=ii',
-        'test_type':'SVG_META_DATE_MATCHES_TODAYSNOW',
+        'nom':'DATE_SPARKLINE_CASES',
+        'svg_url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-cases.svg?x=ii',
+        'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'cases-sparkline',
     },
     {
-        'nom':'SPARKLINE_DEATHS',
-        'url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-deaths.svg?x=jj',
-        'test_type':'SVG_META_DATE_MATCHES_TODAYSNOW',
+        'nom':'DATE_SPARKLINE_DEATHS',
+        'svg_url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-deaths.svg?x=jj',
+        'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'deaths-sparkline',
     },
     {
-        'nom':'SPARKLINE_TESTS',
-        'url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-tests.svg?x=kk',
-        'test_type':'SVG_META_DATE_MATCHES_TODAYSNOW',
+        'nom':'DATE_SPARKLINE_TESTS',
+        'svg_url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-tests.svg?x=kk',
+        'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'tests-sparkline',
     },
     {
-        'nom':'SPARKLINE_VACCINES',
-        'url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-vaccines.svg?x=ll',
-        'test_type':'SVG_META_DATE_MATCHES_TODAYSNOW',
+        'nom':'DATE_SPARKLINE_VACCINES',
+        'svg_url':'http://files.covid19.ca.gov/img/generated/sparklines/sparkline-vaccines.svg?x=ll',
+        'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'vaccines-sparkline',
     },
@@ -140,7 +147,7 @@ chart_tests = [
 DATE_MATCHES_TODAY
  match against now.strftime('%B %-d, %Y')
 
-DATE_MATCHES_TODAYSNOW
+DATE_MATCHES_TODAY
  pull date from either json_url/json_field (if present) or url/pat
  match against now.strftime('%Y-%m-%d')
 
