@@ -3,6 +3,7 @@
 import sys, time, argparse, importlib
 from pytz import timezone
 import requests, json
+import re
 
 # reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
@@ -68,6 +69,8 @@ def updateWordbase(q):
             reason = 'trigger word'
         elif tooLong(q['query']):
             reason = 'too long'
+        elif looksLikeEmailOrDomain(q['query']):
+            reason = 'looks like email or domain name'
         elif q['num'] <= 11:
             reason = 'low score'
         msg = "new search: %s%s" % ("<redacted>" if wouldReject(q['query']) else q['query'], 
@@ -99,15 +102,20 @@ def hashCode(w):
 runs = 0
 
 rejectList = [
-	3154295, -891899646, 3446907, -1263686556,
-	-519573749, 32245991, -1045620280, 3083181, 
-	105116, 3059156, -717313205, -20842805,
-	3529280, 3441177, 3065272, 3541578,
-    -1220868373, -1734002494
+    3154295, -891899646, 3446907, -1263686556,
+    -519573749, 32245991, -1045620280, 3083181, 
+    105116, 3059156, -717313205, -20842805,
+    3529280, 3441177, 3065272, 3541578,
+    -1220868373, -1944906010
 ]
 
 def wouldReject(phrase):
+    if hashCode(phrase) in rejectList:
+        return True
     return len([1 for word in phrase.split(' ') if hashCode(word) in rejectList]) > 0
+
+def looksLikeEmailOrDomain(phrase):
+    return re.search(r'((@|\w+\.\w+))', phrase) != None
 
 def tooLong(phrase):
     return phrase.count(' ') > 4

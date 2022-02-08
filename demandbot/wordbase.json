@@ -1,7 +1,7 @@
 {
   "mask mandate": {
     "query": "mask mandate",
-    "min": 334,
+    "min": 15,
     "max": 344
   },
   "covid testing": {
@@ -92,7 +92,7 @@
   "booster": {
     "query": "booster",
     "min": 10,
-    "max": 10
+    "max": 12
   },
   "sign": {
     "query": "sign",
@@ -143,5 +143,35 @@
     "query": "test",
     "min": 10,
     "max": 10
+  },
+  "covid testing sites": {
+    "query": "covid testing sites",
+    "min": 53,
+    "max": 53
+  },
+  "covid pay": {
+    "query": "covid pay",
+    "min": 26,
+    "max": 26
+  },
+  "name559l850@gmail.com": {
+    "query": "name559l850@gmail.com",
+    "min": 13,
+    "max": 13
+  },
+  "nurengberg curt wach": {
+    "query": "nurengberg curt wach",
+    "min": 12,
+    "max": 12
+  },
+  "latest news about covid": {
+    "query": "latest news about covid",
+    "min": 11,
+    "max": 11
+  },
+  "free covid test": {
+    "query": "free covid test",
+    "min": 11,
+    "max": 11
   }
 }
