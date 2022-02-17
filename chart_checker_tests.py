@@ -1,10 +1,18 @@
 
+# note: monday is 0, Sunday is 6
+weekdays_only   = [1,1,1,1,1,0,0]
+all_days        = [1,1,1,1,1,1,1]
+no_stale_days   = [0,0,0,0,0,0,0]
+wednesday_stale = [0,0,1,0,0,0,0]
+thursday_stale  = [0,0,0,1,0,0,0]
+
 chart_tests = [
     {
         'nom':'DATE_SUMMARY',
         'url':'https://covid19.ca.gov/state-dashboard',
         'pat':r'<p class="small-text">Last updated\&nbsp;(.*?) at',
         'test_type':'DATE_MATCHES_TODAY',
+        'active_days': all_days,
         'bnom':'tracker-boxes',
     },
     {
@@ -13,7 +21,7 @@ chart_tests = [
         'pat':r'<p class="small-text">(?:Updated|Vaccines administered updated) (.*?) at',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'update-date',
-        'weekdays-only':True,
+        'active_days': weekdays_only,
         'not-on-holidays':True,
     },
     {
@@ -22,7 +30,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'cases-chart',
-        'weekdays-only':True,
+        'active_days': weekdays_only,
         'not-on-holidays':True,
     },
     {
@@ -33,6 +41,7 @@ chart_tests = [
         'json_field':'data.latest.CONFIRMED_CASES.total_confirmed_cases',
         'test_type':'NUMBER_MATCHES_JSON',
         'bnom':'cases-chart',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_DEATHS',
@@ -40,7 +49,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'deaths-chart',
-        'weekdays-only':True,
+        'active_days': weekdays_only,
         'not-on-holidays':True,
     },
     {
@@ -51,6 +60,7 @@ chart_tests = [
         'json_field':'data.latest.CONFIRMED_DEATHS.total_confirmed_deaths',
         'test_type':'NUMBER_MATCHES_JSON',
         'bnom':'deaths-chart',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_TESTS',
@@ -58,7 +68,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'tests-chart',
-        'weekdays-only':True,
+        'active_days': weekdays_only,
         'not-on-holidays':True,
     },
     {
@@ -71,6 +81,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'groups-chart',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_POSITIVITY',
@@ -87,6 +98,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'patients-chart',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_ICUBEDS',
@@ -94,6 +106,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'icu-beds-chart',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_VACCINE_SPARKLINES_DATA',
@@ -101,7 +114,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'vaccines-sparklines-data',
-        'weekdays-only':True,
+        'active_days': weekdays_only,
         'not-on-holidays':True,
     },
     {
@@ -110,6 +123,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'cases-sparkline',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_SPARKLINE_DEATHS',
@@ -117,6 +131,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'deaths-sparkline',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_SPARKLINE_TESTS',
@@ -124,6 +139,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'tests-sparkline',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_SPARKLINE_VACCINES',
@@ -131,13 +147,27 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'vaccines-sparkline',
+        'active_days': all_days,
     },
     {
         'nom':'DATE_POSTVAX',
         'json_url':'https://data.covid19.ca.gov/data/dashboard/postvax/california.json?x=xx',
         'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'WEEKDATE_GTE_WEDNESDAY',
+        'test_type':'DATE_WEEKLY_MATCH',
+        'weekday': 2,
+        'stale_days': wednesday_stale,
         'bnom':'postvax-charts',
+        'active_days': all_days,
+    },
+    {
+        'nom':'DATE_VARIANTS',
+        'json_url':'https://data.covid19.ca.gov/data/variants/california.json?x=xx',
+        'json_field':'meta.PUBLISHED_DATE',
+        'test_type':'DATE_WEEKLY_MATCH',
+        'weekday': 3,
+        'stale_days': thursday_stale,
+        'bnom':'variant-chart',
+        'active_days': all_days,
     },
 ]
 

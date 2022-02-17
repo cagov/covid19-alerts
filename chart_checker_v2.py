@@ -128,20 +128,20 @@ def do_tests():
                     r = fetch_url(trec['url'])
                     datestr = fetch_str(trec['pat'], r.text.replace("\n"," "))
                     is_pass = datestr == now_datestr
-            elif trec['test_type'] == 'WEEKDATE_GTE_WEDNESDAY':
+            elif trec['test_type'] == 'DATE_WEEKLY_MATCH':
                 from datetime import date as dtdate
                 from datetime import time as dttime
-                last_wednesday = datetime.combine(dtdate.today(),dttime())  # today at midnight
-                while last_wednesday.weekday() != 2:
-                    last_wednesday -= timedelta(days=1)
+                last_matchday = datetime.combine(dtdate.today(),dttime())  # today at midnight
+                while last_matchday.weekday() != trec['weekday']:
+                    last_matchday -= timedelta(days=1)
                 if 'json_url' in trec:
                     jr = fetch_url(trec['json_url'])
                     data = json.loads(jr.text)
-                    datetgt = fetch_json_field(data, trec['json_field'])
+                    datestr = fetch_json_field(data, trec['json_field'])
                 else:
                     r = fetch_url(trec['url'])
-                    datetgt = fetch_str(trec['pat'], r.text.replace("\n"," "))
-                is_pass = datetime.strptime(datetgt,'%Y-%m-%d') >= last_wednesday
+                    datestr = fetch_str(trec['pat'], r.text.replace("\n"," "))
+                is_pass = datetime.strptime(datestr,'%Y-%m-%d') >= last_matchday
             elif trec['test_type'] == 'NUMBER_MATCHES_JSON':
                 r = fetch_url(trec['url'])
                 numsrc = int(fetch_str(trec['pat'], r.text.replace("\n"," ")).replace(',',''))
@@ -176,24 +176,25 @@ def do_tests():
 # FM_CONTENT_TESTS - content tests expected to fail around 9:20, but pass at 9:30
 
 def compute_expected_passes():
-    isWeekend = datetime.now().weekday() >= 5
-    isMonSat = datetime.now().weekday() >= 6
-    isWednesday = datetime.now().weekday() == 2
+    curDay = datetime.now().weekday()
     now_snowdate = datetime.today().strftime('%Y-%m-%d')
     isHoliday = now_snowdate in cagov_config.holidays
 
     FM_DATE_TESTS = 0 # dates expected to pass post 9am
     FM_CONTENT_TESTS = 0 # content tests expected to pass (normally, all of them, all the time)
     FM_EXPECTED_STALE_PASSES = 0 # tests expected to pass from midnight to 9:30am
+
     for i,trec in enumerate(chart_tests):
+        active_days = trec['active_days'] if 'active_days' in trec else chart_checker_tests.all_days
+
         if 'DATE' in trec['test_type']:
-            if not (isWeekend and 'weekdays-only' in trec) \
-               and not (isMonSat and 'monsat-only' in trec) \
-               and not (isHoliday and 'not-on-holidays' in trec):
+            stale_days = trec['stale_days'] if 'stale_days' in trec else chart_checker_tests.all_days
+            if active_days[curDay] and not (isHoliday and 'not-on-holidays' in trec):
                 FM_DATE_TESTS |= (1 << i)
-            if 'WEEKDATE' in trec['test_type'] and not isWednesday:
+            if not stale_days[curDay]: # only one that gets this is a wednesday only test...
                 FM_EXPECTED_STALE_PASSES |= (1 << i)
         else:
+            # content tests should always pass
             FM_CONTENT_TESTS |= (1 << i) # content expected to pass
             FM_EXPECTED_STALE_PASSES |= (1 << i)
 
@@ -268,7 +269,7 @@ try:
             for ti, trec in enumerate(chart_tests):
                 if trec['test_type'] == 'PASS':
                     continue
-                elif 'DATE' in trec['test_type'] and 'WEEKDATE' not in trec['test_type']:
+                elif 'DATE' in trec['test_type'] and 'WEEKLY' not in trec['test_type']:
                     chartdatebits[trec['bnom']] = ti
                 else:
                     chartmatchbits[trec['bnom']] = ti
