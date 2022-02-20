@@ -16,6 +16,7 @@ from slack_info import slackAlertChannel, slackOutagesChannel, slackTeamID
 parser = argparse.ArgumentParser(description='Cagov site checker')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
 parser.add_argument('-t', '--test', default=False, action='store_true', help='Test')
+parser.add_argument('-q', '--quiet', default=False, action='store_true', help='Quiet - no slack')
 parser.add_argument('-n', '--no_init_sleep', default=False, action='store_true', help='No initial sleep')
 parser.add_argument('-config', default="cagov_config", help='Config file name prefix, default=%(default)s')
 args = parser.parse_args()
@@ -26,22 +27,25 @@ args = parser.parse_args()
 cagov_config = importlib.import_module(args.config)
 
 def post_message_to_slack(text, blocks = None, channel=slackAlertChannel):
-    return requests.post('https://slack.com/api/chat.postMessage', {
-        'token': slackbot_token,
-        'channel': channel,
-        'text': text,
-        'icon_emoji': ':butterfly:',
-        # 'icon_url': slack_icon_url,
-        # 'username': slack_user_name,
-        'blocks': json.dumps(blocks) if blocks else None
-    }).json()
+    if not args.quiet:
+        requests.post('https://slack.com/api/chat.postMessage', {
+            'token': slackbot_token,
+            'channel': channel,
+            'text': text,
+            'icon_emoji': ':butterfly:',
+            # 'icon_url': slack_icon_url,
+            # 'username': slack_user_name,
+            'blocks': json.dumps(blocks) if blocks else None
+        }).json()
+    else:
+        print("Would post", text)
 
 
 def send_pushover(message, title='CAGOVAlert', url=None, url_title=None):
     global args
     try:
         print("Broadcasting message:",message)
-        if args.test:
+        if args.test or args.quiet:
             return
         payload = {"token": pushover_app_token, 
                 "user": pushover_user_key, 
@@ -82,7 +86,8 @@ try:
         url = cagov_config.root_url + '/sitemap.xml'
         url_title = '/sitemap.xml'
         page_noms = []
-        sites_updated = []
+        pages_updated = []
+        pages_published = []
         try:
             r = requests.get(url)
             if r.status_code != 200:
@@ -145,17 +150,25 @@ try:
                 continue
             # use a memcache here...
             if url in old_pages and old_pages[url] != text:
-                sites_updated.append(url_title)
+                pages_updated.append(url_title)
+            elif url not in old_pages and runs > 1:
+                pages_published.append(url_title)
             old_pages[url] = text
             old_statuses[url] = r.status_code
             time.sleep(1)
         runs += 1
-        if len(sites_updated) > 0:
-            if len(sites_updated) > 5:
-                post_message_to_slack("%d pages Updated" % (len(sites_updated)),channel=slackAlertChannel)
+        if len(pages_published) > 0:
+            if len(pages_published) > 5:
+                post_message_to_slack("%d pages published" % (len(pages_published)),channel=slackAlertChannel)
             else:
-                post_message_to_slack("%s Updated" % (','.join(sites_updated)),channel=slackAlertChannel)
-            send_pushover("%s Updated" % (','.join(sites_updated)))
+                post_message_to_slack("%s published" % (','.join(pages_published)),channel=slackAlertChannel)
+            send_pushover("%s published" % (','.join(pages_published)))
+        if len(pages_updated) > 0:
+            if len(pages_updated) > 5:
+                post_message_to_slack("%d pages updated" % (len(pages_updated)),channel=slackAlertChannel)
+            else:
+                post_message_to_slack("%s updated" % (','.join(pages_updated)),channel=slackAlertChannel)
+            send_pushover("%s Updated" % (','.join(pages_updated)))
         elif args.verbose:
             print("All sites passed")
         # if runs == 2 and args.test:
