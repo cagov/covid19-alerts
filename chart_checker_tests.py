@@ -89,7 +89,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'positivity-chart',
-        'weekdays-only':True,
+        'active_days': weekdays_only,
         'not-on-holidays':True,
     },
     {
