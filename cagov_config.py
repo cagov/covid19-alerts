@@ -14,6 +14,11 @@ removals = [
     r'<p class="small-text">Last upd.*?</p>'
 ]
 
+replacements = [
+    (r'wp-container-[0-9a-f]+','wp-container')
+]
+
+
 holidays = ['2022-02-21', # presidents day
             '2022-03-31', # cesar chavez day
             '2022-05-30', # memorial day

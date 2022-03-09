@@ -127,6 +127,8 @@ try:
                 text = r.text
                 for pat in cagov_config.removals:
                     text = re.sub(pat,'',text)
+                for pat,rep in cagov_config.replacements:
+                    text = re.sub(pat,rep,text)
                 if args.test:
                     ofilename = page_nom.replace("/","") + '.html'
                     with open("./pages/" +ofilename,"w") as ofile:
