@@ -220,8 +220,10 @@ try:
                 # sleep til midnight
                 sleep_secs = (23-now.hour)*60*60 + (59-now.minute)*60 + 60-now.second
             elif last_res_mask == FM_EXPECTED_STALE_PASSES and now.hour < 9:
-                # sleep til 9am
-                sleep_secs = (8-now.hour)*60*60 + (59-now.minute)*60 + 60-now.second
+                # sleep til next hour
+                # previously we slept til 9, but this broke on daylight savings days
+                # sleep_secs = (8-now.hour)*60*60 + (59-now.minute)*60 + 60-now.second
+                sleep_secs = (59-now.minute)*60 + 60-now.second
             else:
                 sleep_secs = 300
             if args.verbose:

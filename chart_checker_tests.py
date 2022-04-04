@@ -1,10 +1,13 @@
 
 # note: monday is 0, Sunday is 6
 weekdays_only   = [1,1,1,1,1,0,0]
+tue_fri_only    = [0,1,0,0,1,0,0]
+fri_only        = [0,0,0,0,1,0,0]
 all_days        = [1,1,1,1,1,1,1]
 no_stale_days   = [0,0,0,0,0,0,0]
 wednesday_stale = [0,0,1,0,0,0,0]
 thursday_stale  = [0,0,0,1,0,0,0]
+friday_stale    = [0,0,0,0,1,0,0]
 
 chart_tests = [
     {
@@ -12,7 +15,7 @@ chart_tests = [
         'url':'https://covid19.ca.gov/state-dashboard',
         'pat':r'<p class="small-text">Last updated\&nbsp;(.*?) at',
         'test_type':'DATE_MATCHES_TODAY',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
         'bnom':'tracker-boxes',
     },
     {
@@ -21,7 +24,7 @@ chart_tests = [
         'pat':r'<p class="small-text">(?:Updated|Vaccines administered updated) (.*?) at',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'update-date',
-        'active_days': weekdays_only,
+        'active_days': tue_fri_only,
         'not-on-holidays':True,
     },
     {
@@ -30,7 +33,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'cases-chart',
-        'active_days': weekdays_only,
+        'active_days': tue_fri_only,
         'not-on-holidays':True,
     },
     {
@@ -41,7 +44,7 @@ chart_tests = [
         'json_field':'data.latest.CONFIRMED_CASES.total_confirmed_cases',
         'test_type':'NUMBER_MATCHES_JSON',
         'bnom':'cases-chart',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_DEATHS',
@@ -49,7 +52,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'deaths-chart',
-        'active_days': weekdays_only,
+        'active_days': tue_fri_only,
         'not-on-holidays':True,
     },
     {
@@ -68,7 +71,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'tests-chart',
-        'active_days': weekdays_only,
+        'active_days': tue_fri_only,
         'not-on-holidays':True,
     },
     {
@@ -81,7 +84,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'groups-chart',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_POSITIVITY',
@@ -89,7 +92,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'positivity-chart',
-        'active_days': weekdays_only,
+        'active_days': tue_fri_only,
         'not-on-holidays':True,
     },
     {
@@ -98,7 +101,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'patients-chart',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_ICUBEDS',
@@ -106,7 +109,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'icu-beds-chart',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_VACCINE_SPARKLINES_DATA',
@@ -114,7 +117,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_MATCHES_TODAY',
         'bnom':'vaccines-sparklines-data',
-        'active_days': weekdays_only,
+        'active_days': tue_fri_only,
         'not-on-holidays':True,
     },
     {
@@ -155,7 +158,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_WEEKLY_MATCH',
         'weekday': 2,
-        'stale_days': wednesday_stale,
+        'stale_days': friday_stale,
         'bnom':'postvax-charts',
         'active_days': all_days,
     },
@@ -165,7 +168,7 @@ chart_tests = [
         'json_field':'meta.PUBLISHED_DATE',
         'test_type':'DATE_WEEKLY_MATCH',
         'weekday': 3,
-        'stale_days': thursday_stale,
+        'stale_days': friday_stale,
         'bnom':'variant-chart',
         'active_days': all_days,
     },

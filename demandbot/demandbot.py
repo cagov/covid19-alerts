@@ -71,7 +71,7 @@ def updateWordbase(q):
             reason = 'too long'
         elif looksLikeEmailOrDomain(q['query']):
             reason = 'looks like email or domain name'
-        elif q['num'] <= 11:
+        elif q['num'] <= 10:
             reason = 'low score'
         msg = "new search: %s%s" % ("<redacted>" if wouldReject(q['query']) else q['query'], 
                                     " (won't show: %s)" % (reason) if reason != '' else '')
