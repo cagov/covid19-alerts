@@ -126,7 +126,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'cases-sparkline',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_SPARKLINE_DEATHS',
@@ -134,7 +134,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'deaths-sparkline',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_SPARKLINE_TESTS',
@@ -142,7 +142,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'tests-sparkline',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_SPARKLINE_VACCINES',
@@ -150,7 +150,7 @@ chart_tests = [
         'test_type':'DATE_MATCHES_TODAY',
         'meta_field':'RENDER_DATE',
         'bnom':'vaccines-sparkline',
-        'active_days': all_days,
+        'active_days': tue_fri_only,
     },
     {
         'nom':'DATE_POSTVAX',
