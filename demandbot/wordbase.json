@@ -6,8 +6,8 @@
   },
   "covid testing": {
     "query": "covid testing",
-    "min": 210,
-    "max": 478
+    "min": 11,
+    "max": 726
   },
   "digital vaccine card": {
     "query": "digital vaccine card",
@@ -36,7 +36,7 @@
   },
   "mask": {
     "query": "mask",
-    "min": 39,
+    "min": 11,
     "max": 39
   },
   "december 15": {
@@ -71,8 +71,8 @@
   },
   "quarantine": {
     "query": "quarantine",
-    "min": 15,
-    "max": 98
+    "min": 11,
+    "max": 252
   },
   "restaurant": {
     "query": "restaurant",
@@ -92,7 +92,7 @@
   "booster": {
     "query": "booster",
     "min": 10,
-    "max": 12
+    "max": 121
   },
   "sign": {
     "query": "sign",
@@ -116,8 +116,8 @@
   },
   "testing": {
     "query": "testing",
-    "min": 32,
-    "max": 63
+    "min": 13,
+    "max": 203
   },
   "para viajar a puerto rico, que requisitos tengo que cumplir": {
     "query": "para viajar a puerto rico, que requisitos tengo que cumplir",
@@ -142,17 +142,257 @@
   "test": {
     "query": "test",
     "min": 10,
-    "max": 10
+    "max": 64
   },
   "covid testing sites": {
     "query": "covid testing sites",
-    "min": 53,
-    "max": 53
+    "min": 14,
+    "max": 1533
+  },
+  "testing sites": {
+    "query": "testing sites",
+    "min": 11,
+    "max": 377
+  },
+  "covid test": {
+    "query": "covid test",
+    "min": 20,
+    "max": 282
+  },
+  "covid 19 testing": {
+    "query": "covid 19 testing",
+    "min": 80,
+    "max": 185
+  },
+  "home test": {
+    "query": "home test",
+    "min": 22,
+    "max": 480
+  },
+  "test results": {
+    "query": "test results",
+    "min": 24,
+    "max": 148
+  },
+  "testing site": {
+    "query": "testing site",
+    "min": 40,
+    "max": 87
+  },
+  "isolation": {
+    "query": "isolation",
+    "min": 10,
+    "max": 54
+  },
+  "exclusion pay": {
+    "query": "exclusion pay",
+    "min": 18,
+    "max": 66
+  },
+  "recovery": {
+    "query": "recovery",
+    "min": 13,
+    "max": 13
+  },
+  "nursing homes": {
+    "query": "nursing homes",
+    "min": 12,
+    "max": 12
+  },
+  "ventura county": {
+    "query": "ventura county",
+    "min": 11,
+    "max": 11
+  },
+  "rapid test": {
+    "query": "rapid test",
+    "min": 11,
+    "max": 11
+  },
+  "prueva de covid": {
+    "query": "prueva de covid",
+    "min": 11,
+    "max": 11
+  },
+  "pcr test": {
+    "query": "pcr test",
+    "min": 11,
+    "max": 11
+  },
+  "covid testing sites in riverside": {
+    "query": "covid testing sites in riverside",
+    "min": 11,
+    "max": 11
+  },
+  "prueba de covid19": {
+    "query": "prueba de covid19",
+    "min": 14,
+    "max": 14
+  },
+  "espa\u00f1ol": {
+    "query": "espa\u00f1ol",
+    "min": 11,
+    "max": 22
+  },
+  "lugares donde hacerse la prueba del covid 19.ca.gov.": {
+    "query": "lugares donde hacerse la prueba del covid 19.ca.gov.",
+    "min": 11,
+    "max": 11
+  },
+  "91977": {
+    "query": "91977",
+    "min": 17,
+    "max": 17
+  },
+  "stress playbook": {
+    "query": "stress playbook",
+    "min": 27,
+    "max": 27
+  },
+  "\u03b1\u03b3\u03bd\u03c9\u03c3\u03c4\u03b1 \u03b1\u03c1\u03c7\u03b5\u03af\u03bf": {
+    "query": "\u03b1\u03b3\u03bd\u03c9\u03c3\u03c4\u03b1 \u03b1\u03c1\u03c7\u03b5\u03af\u03bf",
+    "min": 21,
+    "max": 21
+  },
+  "lottery uscom": {
+    "query": "lottery uscom",
+    "min": 10,
+    "max": 10
+  },
+  "donde puedo tomar una pruba be corona virus en dinuba o visalia ca.": {
+    "query": "donde puedo tomar una pruba be corona virus en dinuba o visalia ca.",
+    "min": 13,
+    "max": 13
+  },
+  "citas": {
+    "query": "citas",
+    "min": 12,
+    "max": 12
+  },
+  "ca lottery game": {
+    "query": "ca lottery game",
+    "min": 10,
+    "max": 10
+  },
+  "free covid test": {
+    "query": "free covid test",
+    "min": 11,
+    "max": 202
+  },
+  "free test": {
+    "query": "free test",
+    "min": 40,
+    "max": 56
+  },
+  "free test kits": {
+    "query": "free test kits",
+    "min": 34,
+    "max": 103
+  },
+  "test kits": {
+    "query": "test kits",
+    "min": 29,
+    "max": 47
+  },
+  "free home test": {
+    "query": "free home test",
+    "min": 28,
+    "max": 73
+  },
+  "at home test": {
+    "query": "at home test",
+    "min": 26,
+    "max": 41
+  },
+  "test kit": {
+    "query": "test kit",
+    "min": 23,
+    "max": 23
+  },
+  "free covid tests": {
+    "query": "free covid tests",
+    "min": 23,
+    "max": 54
+  },
+  "home test kits": {
+    "query": "home test kits",
+    "min": 18,
+    "max": 56
+  },
+  "free tests": {
+    "query": "free tests",
+    "min": 16,
+    "max": 35
+  },
+  "tests": {
+    "query": "tests",
+    "min": 16,
+    "max": 16
+  },
+  "free masks": {
+    "query": "free masks",
+    "min": 12,
+    "max": 265
+  },
+  "free test kit": {
+    "query": "free test kit",
+    "min": 29,
+    "max": 29
+  },
+  "los angeles": {
+    "query": "los angeles",
+    "min": 10,
+    "max": 10
   },
   "covid pay": {
     "query": "covid pay",
-    "min": 26,
-    "max": 26
+    "min": 11,
+    "max": 99
+  },
+  "the": {
+    "query": "the",
+    "min": 24,
+    "max": 24
+  },
+  "como puedo abrir una cuenta para mis resultados del covid": {
+    "query": "como puedo abrir una cuenta para mis resultados del covid",
+    "min": 21,
+    "max": 21
+  },
+  "1": {
+    "query": "1",
+    "min": 12,
+    "max": 12
+  },
+  "paid sick leave": {
+    "query": "paid sick leave",
+    "min": 10,
+    "max": 10
+  },
+  "sick leave": {
+    "query": "sick leave",
+    "min": 10,
+    "max": 10
+  },
+  "covid contracts": {
+    "query": "covid contracts",
+    "min": 12,
+    "max": 12
+  },
+  "costco.com": {
+    "query": "costco.com",
+    "min": 10,
+    "max": 10
+  },
+  "assisted living facilities": {
+    "query": "assisted living facilities",
+    "min": 10,
+    "max": 10
+  },
+  "latest news about covid": {
+    "query": "latest news about covid",
+    "min": 11,
+    "max": 11
   },
   "name559l850@gmail.com": {
     "query": "name559l850@gmail.com",
@@ -164,14 +404,164 @@
     "min": 12,
     "max": 12
   },
-  "latest news about covid": {
-    "query": "latest news about covid",
+  "donde puedo agarrar mi reporte para el travajo despues de aber dadk pocitibo para. covi": {
+    "query": "donde puedo agarrar mi reporte para el travajo despues de aber dadk pocitibo para. covi",
+    "min": 12,
+    "max": 12
+  },
+  "supplemental paid sick leave": {
+    "query": "supplemental paid sick leave",
+    "min": 10,
+    "max": 10
+  },
+  "black oak casino blast": {
+    "query": "black oak casino blast",
+    "min": 13,
+    "max": 13
+  },
+  "michigan covid19 cases and deaths": {
+    "query": "michigan covid19 cases and deaths",
+    "min": 13,
+    "max": 13
+  },
+  "business search": {
+    "query": "business search",
     "min": 11,
     "max": 11
   },
-  "free covid test": {
-    "query": "free covid test",
+  "ayuda de renta fort worth texas": {
+    "query": "ayuda de renta fort worth texas",
+    "min": 10,
+    "max": 10
+  },
+  "ayuda monetaria": {
+    "query": "ayuda monetaria",
+    "min": 10,
+    "max": 10
+  },
+  "tracking number969271773": {
+    "query": "tracking number969271773",
+    "min": 12,
+    "max": 12
+  },
+  "969271773": {
+    "query": "969271773",
+    "min": 10,
+    "max": 10
+  },
+  "santa clara county": {
+    "query": "santa clara county",
+    "min": 10,
+    "max": 10
+  },
+  "how to redeem my code": {
+    "query": "how to redeem my code",
     "min": 11,
     "max": 11
+  },
+  "amazon.com": {
+    "query": "amazon.com",
+    "min": 11,
+    "max": 11
+  },
+  "daily new cases in riverside county": {
+    "query": "daily new cases in riverside county",
+    "min": 13,
+    "max": 13
+  },
+  "covid-19 testing required when visiting residential facility": {
+    "query": "covid-19 testing required when visiting residential facility",
+    "min": 11,
+    "max": 11
+  },
+  "california lottery": {
+    "query": "california lottery",
+    "min": 10,
+    "max": 10
+  },
+  "church": {
+    "query": "church",
+    "min": 10,
+    "max": 68
+  },
+  "calottery con": {
+    "query": "calottery con",
+    "min": 13,
+    "max": 13
+  },
+  ",": {
+    "query": ",",
+    "min": 11,
+    "max": 11
+  },
+  "ca.loter. com": {
+    "query": "ca.loter. com",
+    "min": 10,
+    "max": 10
+  },
+  "worship": {
+    "query": "worship",
+    "min": 15,
+    "max": 15
+  },
+  "places of worship": {
+    "query": "places of worship",
+    "min": 14,
+    "max": 36
+  },
+  "religious services": {
+    "query": "religious services",
+    "min": 13,
+    "max": 13
+  },
+  "everett wa. ayuda para pagar el alquiler a personas con discapacidad": {
+    "query": "everett wa. ayuda para pagar el alquiler a personas con discapacidad",
+    "min": 16,
+    "max": 16
+  },
+  "meaning of stalemate": {
+    "query": "meaning of stalemate",
+    "min": 13,
+    "max": 13
+  },
+  "taxi driver ayuda": {
+    "query": "taxi driver ayuda",
+    "min": 11,
+    "max": 11
+  },
+  "www calotery con": {
+    "query": "www calotery con",
+    "min": 10,
+    "max": 10
+  },
+  "covid": {
+    "query": "covid",
+    "min": 11,
+    "max": 11
+  },
+  "second booster": {
+    "query": "second booster",
+    "min": 10,
+    "max": 123
+  },
+  "second booster shot": {
+    "query": "second booster shot",
+    "min": 16,
+    "max": 51
+  },
+  "2nd booster": {
+    "query": "2nd booster",
+    "min": 11,
+    "max": 11
+  },
+  "2nd booster shot": {
+    "query": "2nd booster shot",
+    "min": 16,
+    "max": 16
+  },
+  "2nd chance": {
+    "query": "2nd chance",
+    "min": 12,
+    "max": 12
   }
 }
