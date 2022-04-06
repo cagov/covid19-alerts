@@ -152,26 +152,27 @@ chart_tests = [
         'bnom':'vaccines-sparkline',
         'active_days': tue_fri_only,
     },
-    {
-        'nom':'DATE_POSTVAX',
-        'json_url':'https://data.covid19.ca.gov/data/dashboard/postvax/california.json?x=xx',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_WEEKLY_MATCH',
-        'weekday': 2,
-        'stale_days': friday_stale,
-        'bnom':'postvax-charts',
-        'active_days': all_days,
-    },
-    {
-        'nom':'DATE_VARIANTS',
-        'json_url':'https://data.covid19.ca.gov/data/variants/california.json?x=xx',
-        'json_field':'meta.PUBLISHED_DATE',
-        'test_type':'DATE_WEEKLY_MATCH',
-        'weekday': 3,
-        'stale_days': friday_stale,
-        'bnom':'variant-chart',
-        'active_days': all_days,
-    },
+    # enable these again next week
+    # {
+    #     'nom':'DATE_POSTVAX',
+    #     'json_url':'https://data.covid19.ca.gov/data/dashboard/postvax/california.json?x=xx',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_WEEKLY_MATCH',
+    #     'weekday': 4,
+    #     'stale_days': friday_stale,
+    #     'bnom':'postvax-charts',
+    #     'active_days': all_days,
+    # },
+    # {
+    #     'nom':'DATE_VARIANTS',
+    #     'json_url':'https://data.covid19.ca.gov/data/variants/california.json?x=xx',
+    #     'json_field':'meta.PUBLISHED_DATE',
+    #     'test_type':'DATE_WEEKLY_MATCH',
+    #     'weekday': 4,
+    #     'stale_days': friday_stale,
+    #     'bnom':'variant-chart',
+    #     'active_days': all_days,
+    # },
 ]
 
 
