@@ -69,6 +69,8 @@ def updateWordbase(q):
             reason = 'trigger word'
         elif tooLong(q['query']):
             reason = 'too long'
+        elif tooShort(q['query']):
+            reason = 'too short'
         elif looksLikeEmailOrDomain(q['query']):
             reason = 'looks like email or domain name'
         elif q['num'] <= 10:
@@ -120,6 +122,8 @@ def looksLikeEmailOrDomain(phrase):
 def tooLong(phrase):
     return phrase.count(' ') > 4
 
+def tooShort(phrase):
+    return len(phrase) < 4
 
 loadWordbase()
 
