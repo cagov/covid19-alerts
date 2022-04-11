@@ -9,15 +9,18 @@ wednesday_stale = [0,0,1,0,0,0,0]
 thursday_stale  = [0,0,0,1,0,0,0]
 friday_stale    = [0,0,0,0,1,0,0]
 
+update_days    =  [0,1,0,0,1,0,0]
+update_hours   =  [9]
+
 chart_tests = [
-    {
-        'nom':'DATE_SUMMARY',
-        'url':'https://covid19.ca.gov/state-dashboard',
-        'pat':r'<p class="small-text">Last updated\&nbsp;(.*?) at',
-        'test_type':'DATE_MATCHES_TODAY',
-        'active_days': tue_fri_only,
-        'bnom':'tracker-boxes',
-    },
+    # {
+    #     'nom':'DATE_SUMMARY',
+    #     'url':'https://covid19.ca.gov/state-dashboard',
+    #     'pat':r'<p class="small-text">Last updated\&nbsp;(.*?) at',
+    #     'test_type':'DATE_MATCHES_TODAY',
+    #     'active_days': tue_fri_only,
+    #     'bnom':'tracker-boxes',
+    # },
     {
         'nom':'DATE_DASHBOARD',
         'url':'https://covid19.ca.gov/state-dashboard',
