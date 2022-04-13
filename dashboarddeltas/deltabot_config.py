@@ -13,13 +13,13 @@ file_list = [
     'branch': 'CovidStateDashboard_Summary_Staging',
     'pdate_field': 'meta.PUBLISHED_DATE',
     'fields_of_interest': [
-        {   'desc':'Total Vaccines',
-            'field':'data.vaccinations.CUMMULATIVE_DAILY_DOSES_ADMINISTERED',
-            'date_check': 'data.vaccinations.DATE',
-            'expected_growth_range': (0.000000, 0.011909),
-            # (15979099.0, 65841193.0,  0.0, 401877.0,   0.000000, 0.011909),
-            'flags':('always_changes','never_sinks')
-        },
+        # {   'desc':'Total Vaccines',
+        #     'field':'data.vaccinations.CUMMULATIVE_DAILY_DOSES_ADMINISTERED',
+        #     'date_check': 'data.vaccinations.DATE',
+        #     'expected_growth_range': (0.000000, 0.011909),
+        #     # (15979099.0, 65841193.0,  0.0, 401877.0,   0.000000, 0.011909),
+        #     'flags':('always_changes','never_sinks')
+        # },
         {   'desc':'Total Cases',
             'field':'data.cases.LATEST_TOTAL_CONFIRMED_CASES',
             'date_check': 'data.cases.DATE',
