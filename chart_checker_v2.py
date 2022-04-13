@@ -263,6 +263,11 @@ try:
             print("STATUS CHANGE %s %02x" % ( datetime.now().strftime('%B %-d, %Y %H:%M:%S'), flag_mask ), res)
             print("  Expected done_mask %x stale passes %x, date tests %x content tests %x" % (FM_ALL_DONE, FM_EXPECTED_STALE_PASSES, FM_DATE_TESTS, FM_CONTENT_TESTS))
             print(msgs)
+
+            curDay = datetime.now().weekday()
+            curHour = datetime.now().hour
+            broadcastOK = curDay in chart_checker_tests.update_days and curHour in chart_checker_tests.update_hours
+
             broadcast_msg = ''
 
             # redo these dynamically
@@ -276,12 +281,12 @@ try:
                 else:
                     chartmatchbits[trec['bnom']] = ti
             big_broadcast = False
-            if flag_mask == FM_ALL_DONE:
+            if flag_mask == FM_EXPECTED_STALE_PASSES:  # check for typical morning staleness...
+                pass
+            elif flag_mask == FM_ALL_DONE:
                 broadcast_msg = '/state-dashboard/ has been fully updated (charts match summaries, sparklines updated)'
                 big_broadcast = True
                 stale_alert_issued = False
-            elif flag_mask == FM_EXPECTED_STALE_PASSES:  # check for typical morning staleness...
-                pass
             elif (flag_mask & FM_DATE_TESTS) == FM_DATE_TESTS and (flag_mask & FM_CONTENT_TESTS) != FM_CONTENT_TESTS:
                 missmatched_items = [nom for nom,idx in chartmatchbits.items() if res[idx] == 0]
                 broadcast_msg = '/state-dashboard/ has been fully updated, but %s charts don\'t match summaries' % ('/'.join(missmatched_items))
@@ -303,14 +308,17 @@ try:
                         broadcast_msg = '/state-dashboard/ has been partially updated'
 
             if broadcast_msg != '':
-                print("BROADCAST MESSAGE: %s" % (broadcast_msg))
-                if not args.quiet:
-                    if args.test:
-                        post_message_to_slack(broadcast_msg, channel=slackJimDebugChannel)
-                    else:
-                        if big_broadcast:
-                            post_message_to_slack(broadcast_msg, channel=slackStateDashChannel)
-                        post_message_to_slack(broadcast_msg, channel=slackAlertChannel)
+                if broadcastOK:
+                    print("BROADCAST MESSAGE: %s" % (broadcast_msg))
+                    if not args.quiet:
+                        if args.test:
+                            post_message_to_slack(broadcast_msg, channel=slackJimDebugChannel)
+                        else:
+                            if big_broadcast:
+                                post_message_to_slack(broadcast_msg, channel=slackStateDashChannel)
+                            post_message_to_slack(broadcast_msg, channel=slackAlertChannel)
+                else:
+                    print("INHIBITING BROADCAST: %s" % (broadcast_msg))
                     
             # post meaningful message to slack here...
         else:
