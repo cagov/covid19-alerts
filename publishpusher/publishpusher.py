@@ -28,13 +28,15 @@ try:
         if runs > 0:
             time.sleep(pp_config.push_interval_secs)
 
+        runs += 1
         pp_config = importlib.import_module(args.config)
         dateTimeObj = datetime.now()
-        if not args.quiet:
-            print(dateTimeObj, "Triggering")
-        runs += 1
-        post_params = {'polldate':str(dateTimeObj)}
-        jr = requests.post(pp_config.trigger_url, data=post_params)
+        curHour = dateTimeObj.hour
+        if curHour >= pp_config.first_active_hour and curHour <= pp_config.last_active_hour:
+            if not args.quiet:
+                print(dateTimeObj, "Triggering")
+            post_params = {'polldate':str(dateTimeObj)}
+            jr = requests.post(pp_config.trigger_url, data=post_params)
         # print(data)
 except KeyboardInterrupt:
     print('interrupted!')
