@@ -6,6 +6,7 @@ slack_info.py
 stdout.log
 package-lock.json
 */node_modules/*
+demandbot/wordbase.json
 *.svg
 attic/*
 __pycache__/
