@@ -173,5 +173,10 @@
     "query": "free covid test",
     "min": 11,
     "max": 11
+  },
+  "cva -roi-deparment@kp.org": {
+    "query": "cva -roi-deparment@kp.org",
+    "min": 10,
+    "max": 10
   }
 }

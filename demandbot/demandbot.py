@@ -103,18 +103,11 @@ def hashCode(w):
 #                data = json.loads(jr.text)
 runs = 0
 
-rejectList = [
-    3154295, -891899646, 3446907, -1263686556,
-    -519573749, 32245991, -1045620280, 3083181, 
-    105116, 3059156, -717313205, -20842805,
-    3529280, 3441177, 3065272, 3541578,
-    -1220868373, -1944906010
-]
-
 def wouldReject(phrase):
-    if hashCode(phrase) in rejectList:
+    global dbot_config
+    if hashCode(phrase) in dbot_config.rejectList:
         return True
-    return len([1 for word in phrase.split(' ') if hashCode(word) in rejectList]) > 0
+    return len([1 for word in phrase.split(' ') if hashCode(word) in dbot_config.rejectList]) > 0
 
 def looksLikeEmailOrDomain(phrase):
     return re.search(r'((@|\w+\.\w+))', phrase) != None
@@ -133,6 +126,7 @@ try:
         if runs > 0:
             sleep_secs = 10 if args.test else 5*60
             time.sleep(sleep_secs)
+        importlib.reload(dbot_config)
         runs += 1
         url = dbot_config.searches_url
         jr = requests.get(url)
