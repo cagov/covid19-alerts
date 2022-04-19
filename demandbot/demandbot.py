@@ -1,9 +1,10 @@
 # demandbot.py
 
 import sys, time, argparse, importlib
-from pytz import timezone
-import requests, json
 import re
+import requests, json
+from pytz import timezone
+from datetime import datetime
 
 # reopen stdout as utf-8, to avoid encoding errors on console messages
 sys.stdout = open(1, 'w', encoding='utf-8', closefd=False)
@@ -52,18 +53,26 @@ def loadWordbase():
 
 def updateWordbase(q):
     global wordbase
+    ts = datetime.now().astimezone(timezone('US/Pacific')).timestamp()
+
+
     if q['query'] not in wordbase:
-        rec = {'query':q['query'], 'min':q['num'],  'max':0}
+        rec = {'query':q['query'], 'min':q['num'],  'max':0, 'ts':ts}
         wordbase[q['query']] = rec
         qrec = rec
     else:
         qrec = wordbase[q['query']]
+        if 'ts' not in qrec:
+            qrec['ts'] = ts
     last_max = qrec['max']
-    if q['num'] < qrec['min']:
-        qrec['min'] = q['num']
-    if q['num'] > qrec['max']:
-        qrec['max'] = q['num']
-    if last_max < 10 and qrec['max'] >= 10:
+    elapsed = ts - qrec['ts']
+    qrec['min'] = min(q['num'],qrec['min'])
+    qrec['max'] = max(q['num'],qrec['max'])
+    qrec['ts'] = ts
+    # if last_max < 10 and qrec['max'] >= 10:
+    if args.verbose:
+        print("query", q['query'], "elapsed",elapsed)
+    if elapsed > dbot_config.elapsed_window or last_max < 10 and qrec['max'] >= 10:
         reason = ''
         if wouldReject(q['query']):
             reason = 'trigger word'
@@ -124,7 +133,7 @@ try:
     while True:
         sys.stdout.flush()
         if runs > 0:
-            sleep_secs = 10 if args.test else 5*60
+            sleep_secs = 10 if args.test else 30*60
             time.sleep(sleep_secs)
         importlib.reload(dbot_config)
         runs += 1

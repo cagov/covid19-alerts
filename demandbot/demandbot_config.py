@@ -1,6 +1,7 @@
 # demandbot_config.py
 searches_url = 'https://cse.google.com/api/003358532045999200914:uxxka6d3pge/popularqueryjs?view=week'
 wordbase_name = 'wordbase.json'
+elapsed_window = 23*60*60 # 23 hours
 rejectList = [
     3154295, -891899646, 3446907, -1263686556,
 		-519573749, 32245991, -1045620280, 3083181, 
