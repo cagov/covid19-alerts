@@ -93,14 +93,15 @@ def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage, channe
 
     # sample link: https://github.com/cagov/covid-static-data/blob/test_deltabot/data/daily-stats-v2.json
     file_link = 'https://github.com/%s/%s/blob/%s/%s' % (args.org, args.repo, filerec['branch'], filerec['filename'])
-    message = '''<@U01ELJEJ1SM>
+    message = '''%s
  %s %s
  File: %s
  Field: %s
  ```
  Previous value: %s
  New value     : %s```
-    ''' % (fieldrec['desc'], warnmessage, 
+    ''' % (dbot_config.who_to_notify,
+           fieldrec['desc'], warnmessage, 
            file_link,
            fieldrec['field'], 
            str(old_value), 

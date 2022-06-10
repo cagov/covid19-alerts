@@ -7,6 +7,12 @@ offhours_sleep = 60*60
 # param order is:
 # min_value, max_value, min_change, max_change, min_growth, max_growth
 
+# xian https://cadotgov.slack.com/team/U01KHGNK8KU
+# aaron https://cadotgov.slack.com/team/UQTUFH6FL
+# jbum https://cadotgov.slack.com/team/U01ELJEJ1SM
+# james logan : U03G2SJ2PEY
+who_to_notify = '<@U01ELJEJ1SM> <@U03G2SJ2PEY>'
+
 file_list = [
   {
     'filename': 'data/daily-stats-v2.json',
