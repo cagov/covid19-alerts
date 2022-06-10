@@ -154,11 +154,16 @@ file_list = [
             # (19.4, 300.7,  -18.0, 26.2,   -0.386463, 0.115673),
             'flags':('always_changes')
         },
-        {   'desc':'Breakthrough Case Rate',
+        {   'desc':'Vax Case Rate',
             'date_check': 'data[-1].DATE',
-            'field':'data[-1].BREAKTHROUGH_CASE_RATE',
-            'expected_growth_range': (-0.340529, 0.137535),
-            # (2.6, 77.0,  -2.0, 7.0,   -0.340529, 0.137535),
+            'field':'data[-1].VAX_CASE_RATE',
+            'expected_growth_range': (-0.128, 0.062),
+            'flags':('always_changes')
+        },
+        {   'desc':'Boost Case Rate',
+            'date_check': 'data[-1].DATE',
+            'field':'data[-1].BOOST_CASE_RATE',
+            'expected_growth_range': (-0.083, 0.042),
             'flags':('always_changes')
         },
     ]

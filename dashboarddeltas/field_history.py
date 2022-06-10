@@ -6,7 +6,7 @@ from datetime import datetime
 # python3 field_history.py data/dashboard/vaccines/sparkline.json data.population.DAILY_AVERAGE data.population.TOTAL_VAXED_RATIO
 # python3 field_history.py data/dashboard/confirmed-cases/california.json data.latest.CONFIRMED_CASES.CASES_DAILY_AVERAGE
 # python3 field_history.py data/dashboard/confirmed-deaths/california.json data.latest.CONFIRMED_DEATHS.DEATHS_DAILY_AVERAGE
-# python3 field_history.py data/dashboard/postvax/california.json 'data[-1].UNVAX_CASE_RATE' 'data[-1].BREAKTHROUGH_CASE_RATE'
+# python3 field_history.py data/dashboard/postvax/california.json 'data[-1].UNVAX_CASE_RATE' 'data[-1].VAX_CASE_RATE' 'data[-1].BOOST_CASE_RATE'
 
 parser = argparse.ArgumentParser(description='Average CSV Daily')
 parser.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose')
