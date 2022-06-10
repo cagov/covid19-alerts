@@ -85,12 +85,29 @@ def get_field(jdata, field_name):
         sys.exit()
 
 
-def perform_warning(filerec, fieldrec, old_value, new_value, warnmessage, channel=slackAlertChannel):
-    # add after debugging: <@U01KHGNK8KU> <@UQTUFH6FL> <@U01ELJEJ1SM> 
-    # xian https://cadotgov.slack.com/team/U01KHGNK8KU
-    # aaron https://cadotgov.slack.com/team/UQTUFH6FL
-    # jbum https://cadotgov.slack.com/team/U01ELJEJ1SM
+def perform_file_warning(filerec, old_value, new_value, warnmessage, channel=slackAlertChannel):
+    # sample link: https://github.com/cagov/covid-static-data/blob/test_deltabot/data/daily-stats-v2.json
+    file_link = 'https://github.com/%s/%s/blob/%s/%s' % (args.org, args.repo, filerec['branch'], filerec['filename'])
+    message = '''%s
+ %s
+ File: %s
+ ```
+ Previous value: %s
+ New value     : %s```
+    ''' % (dbot_config.who_to_notify,
+           warnmessage, 
+           file_link,
+           str(old_value), 
+           str(new_value))
+    if not args.quiet:
+        post_message_to_slack(message, channel=channel)
+    else:
+        print("Would post warning\n%s" % (message))
+    if args.verbose:
+        print("Posting warning about %s %s" % (filerec['filename'], fieldrec['field']))
 
+
+def perform_field_warning(filerec, fieldrec, old_value, new_value, warnmessage, channel=slackAlertChannel):
     # sample link: https://github.com/cagov/covid-static-data/blob/test_deltabot/data/daily-stats-v2.json
     file_link = 'https://github.com/%s/%s/blob/%s/%s' % (args.org, args.repo, filerec['branch'], filerec['filename'])
     message = '''%s
@@ -163,12 +180,21 @@ try:
                 new_date = datetime.strptime(get_field(curdata, file_rec['pdate_field']),'%Y-%m-%d')
                 if new_date <= old_date:
                     if new_date < old_date:
-                        print("Date went backwards, ignoring")
+                        print("Date went backwards, ignoring %s" % (filename))
                     else:
                         if args.verbose:
                             print("File %s is unchanged" % (filename))
                     continue
                 # do field by field comparisons here...
+                if 'expected_changed_date_field' in file_rec:
+                    old_date = datetime.strptime(get_field(deltabase[filename], file_rec['expected_changed_date_field']),'%Y-%m-%d')
+                    new_date = datetime.strptime(get_field(curdata, file_rec['expected_changed_date_field']),'%Y-%m-%d')
+                    if new_date <= old_date:
+                        print("Date has not advanced for file %s" % (filename))
+                    perform_file_warning(file_rec, old_date, new_date, 
+                            "report date has not changed, and was expected to")
+                    issues_found += 1
+
                 if args.verbose:
                     print("File %s has changed, checking" % (filename))
                 issues_found = 0
@@ -186,7 +212,7 @@ try:
                     new_value = get_field(curdata, frec['field'])
                     if old_value == new_value and \
                         'always_changes' in frec['flags']:
-                        perform_warning(file_rec, frec, old_value, new_value, "has not changed, but was expected to")
+                        perform_field_warning(file_rec, frec, old_value, new_value, "has not changed, but was expected to")
                         issues_found += 1
                     min_growth, max_growth = frec['expected_growth_range']
                     delta = (new_value - old_value) / float(days)
@@ -198,21 +224,21 @@ try:
                     if growth < dbot_config.trigger_factor * min_growth:
                         if args.verbose:
                             print("TRIGGER SINK %s: old: %f new: %f delta: %f growth: %f min_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, min_growth))
-                        perform_warning(file_rec, frec, old_value, new_value, 
+                        perform_field_warning(file_rec, frec, old_value, new_value, 
                                 "has sunk at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1
                     elif growth < 1.1*min_growth:
-                        perform_warning(file_rec, frec, old_value, new_value, 
+                        perform_field_warning(file_rec, frec, old_value, new_value, 
                                 "has sunk faster than seen before - time to update config?", channel=slackJimDebugChannel)
                         issues_found += 1
                     if growth > dbot_config.trigger_factor * max_growth:
                         if args.verbose:
                             print("TRIGGER RISE %s: old: %f new: %f delta: %f growth: %f max_growth: %.5f\n" % (frec['desc'], old_value, new_value, delta, growth, max_growth))
-                        perform_warning(file_rec, frec, old_value, new_value, 
+                        perform_field_warning(file_rec, frec, old_value, new_value, 
                                 "has risen at least %.1fx faster than ever seen before" % (dbot_config.trigger_factor))
                         issues_found += 1
                     elif growth > 1.1*max_growth:
-                        perform_warning(file_rec, frec, old_value, new_value, 
+                        perform_field_warning(file_rec, frec, old_value, new_value, 
                                 "has risen faster than seen before - time to update config?", channel=slackJimDebugChannel)
                         issues_found += 1
             else:
