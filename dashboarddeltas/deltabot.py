@@ -187,13 +187,15 @@ try:
                     continue
                 # do field by field comparisons here...
                 if 'expected_changed_date_field' in file_rec:
-                    old_date = datetime.strptime(get_field(deltabase[filename], file_rec['expected_changed_date_field']),'%Y-%m-%d')
-                    new_date = datetime.strptime(get_field(curdata, file_rec['expected_changed_date_field']),'%Y-%m-%d')
+                    old_date_str = get_field(deltabase[filename], file_rec['expected_changed_date_field'])
+                    new_date_str = get_field(curdata, file_rec['expected_changed_date_field'])
+                    old_date = datetime.strptime(old_date_str,'%Y-%m-%d')
+                    new_date = datetime.strptime(new_date_str,'%Y-%m-%d')
                     if new_date <= old_date:
                         print("Date has not advanced for file %s" % (filename))
-                    perform_file_warning(file_rec, old_date, new_date, 
+                        perform_file_warning(file_rec, old_date_str, new_date_str, 
                             "report date has not changed, and was expected to")
-                    issues_found += 1
+                        issues_found += 1
 
                 if args.verbose:
                     print("File %s has changed, checking" % (filename))
