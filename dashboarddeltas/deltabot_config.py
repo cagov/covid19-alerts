@@ -141,31 +141,31 @@ file_list = [
         },
     ]
   },
-  {
-    'filename': 'data/dashboard/postvax/california.json',
-    'branch': 'CovidStateDashboardPostvax_Staging',
-    'pdate_field': 'meta.PUBLISHED_DATE',
-    'expected_changed_date_field': 'meta.REPORT_DATE',
-    'fields_of_interest': [
-        {   'desc':'Unvax Case Rate',
-            'date_check': 'data[-1].DATE',
-            'field':'data[-1].UNVAX_CASE_RATE',
-            'expected_growth_range': (-0.386463, 0.115673),
-            # (19.4, 300.7,  -18.0, 26.2,   -0.386463, 0.115673),
-            'flags':('always_changes')
-        },
-        {   'desc':'Vax Case Rate',
-            'date_check': 'data[-1].DATE',
-            'field':'data[-1].VAX_CASE_RATE',
-            'expected_growth_range': (-0.128, 0.062),
-            'flags':('always_changes')
-        },
-        {   'desc':'Boost Case Rate',
-            'date_check': 'data[-1].DATE',
-            'field':'data[-1].BOOST_CASE_RATE',
-            'expected_growth_range': (-0.083, 0.042),
-            'flags':('always_changes')
-        },
-    ]
-  },
+#   {
+#     'filename': 'data/dashboard/postvax/california.json',
+#     'branch': 'CovidStateDashboardPostvax_Staging',
+#     'pdate_field': 'meta.PUBLISHED_DATE',
+#     'expected_changed_date_field': 'meta.REPORT_DATE',
+#     'fields_of_interest': [
+#         {   'desc':'Unvax Case Rate',
+#             'date_check': 'data[-1].DATE',
+#             'field':'data[-1].UNVAX_CASE_RATE',
+#             'expected_growth_range': (-0.386463, 0.115673),
+#             # (19.4, 300.7,  -18.0, 26.2,   -0.386463, 0.115673),
+#             'flags':('always_changes')
+#         },
+#         {   'desc':'Vax Case Rate',
+#             'date_check': 'data[-1].DATE',
+#             'field':'data[-1].VAX_CASE_RATE',
+#             'expected_growth_range': (-0.128, 0.062),
+#             'flags':('always_changes')
+#         },
+#         {   'desc':'Boost Case Rate',
+#             'date_check': 'data[-1].DATE',
+#             'field':'data[-1].BOOST_CASE_RATE',
+#             'expected_growth_range': (-0.083, 0.042),
+#             'flags':('always_changes')
+#         },
+#     ]
+#   },
 ]
