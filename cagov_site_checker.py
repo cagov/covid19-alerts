@@ -10,7 +10,7 @@ import requests, json
 from lxml import etree
 
 from slack_credentials import slackbot_token
-from slack_info import slackAlertChannel, slackOutagesChannel, slackTeamID
+from slack_info import slackAlertChannel, slackTeamID
 
 
 parser = argparse.ArgumentParser(description='Cagov site checker')
@@ -92,7 +92,7 @@ try:
             r = requests.get(url)
             if r.status_code != 200:
                 if url in old_statuses and old_statuses[url] != r.status_code:
-                    post_message_to_slack("Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackOutagesChannel)
+                    # post_message_to_slack("Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackOutagesChannel)
                     post_message_to_slack("<@U01KHGNK8KU> <@UQTUFH6FL> <@U01ELJEJ1SM> Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackAlertChannel)
                     send_pushover("Non-200 result for %s (%d)" % (url_title, r.status_code),url=url,url_title=url_title)
                     time.sleep(60)
@@ -144,7 +144,7 @@ try:
 
             if r.status_code != 200:
                 if url in old_statuses and old_statuses[url] != r.status_code:
-                    post_message_to_slack("Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackOutagesChannel)
+                    # post_message_to_slack("Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackOutagesChannel)
                     post_message_to_slack("<@U01KHGNK8KU> <@UQTUFH6FL> <@U01ELJEJ1SM> Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackAlertChannel)
                     send_pushover("Non-200 result for %s (%d)" % (url_title, r.status_code),url=url,url_title=url_title)
                     time.sleep(1)
