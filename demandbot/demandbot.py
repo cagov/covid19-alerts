@@ -90,7 +90,7 @@ def updateWordbase(q):
         # advertise it...
         if not args.test and not args.quiet:
             post_message_to_slack(msg, channel=slackAlertChannel)
-            post_message_to_slack(msg, channel=slackPageFeedbackChannel)
+            # post_message_to_slack(msg, channel=slackPageFeedbackChannel)
 
 def saveWordbase():
     global wordbase
