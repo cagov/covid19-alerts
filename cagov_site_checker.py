@@ -93,7 +93,7 @@ try:
             if r.status_code != 200:
                 if url in old_statuses and old_statuses[url] != r.status_code:
                     # post_message_to_slack("Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackOutagesChannel)
-                    post_message_to_slack("<@U01KHGNK8KU> <@UQTUFH6FL> <@U01ELJEJ1SM> Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackAlertChannel)
+                    post_message_to_slack("<@U03G2SJ2PEY> <@U01ELJEJ1SM> Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackAlertChannel)
                     send_pushover("Non-200 result for %s (%d)" % (url_title, r.status_code),url=url,url_title=url_title)
                     time.sleep(60)
                 old_statuses[url] = r.status_code
@@ -145,7 +145,7 @@ try:
             if r.status_code != 200:
                 if url in old_statuses and old_statuses[url] != r.status_code:
                     # post_message_to_slack("Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackOutagesChannel)
-                    post_message_to_slack("<@U01KHGNK8KU> <@UQTUFH6FL> <@U01ELJEJ1SM> Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackAlertChannel)
+                    post_message_to_slack("<@U03G2SJ2PEY> <@U01ELJEJ1SM> Non 200 result for %s (%d)" % (url_title, r.status_code), channel=slackAlertChannel)
                     send_pushover("Non-200 result for %s (%d)" % (url_title, r.status_code),url=url,url_title=url_title)
                     time.sleep(1)
                 old_statuses[url] = r.status_code
