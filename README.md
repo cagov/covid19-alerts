@@ -1,3 +1,6 @@
+## NOTE: As of 5-28-2024 This project is not actively maintained by ODI and this repo is being converted to Archive (read-only) status.
+## The daemons have been disabled.
+
 The daemon utilities in this repository are used for continuous tracking of the COVID-19 website.
 
 They both report to the #covid19-alerts channel on Slack.
